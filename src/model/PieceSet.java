@@ -7,9 +7,9 @@ import java.util.ArrayList;
  */
 public class PieceSet {
     private ArrayList<Piece> pieces;
-    private final String color;
+    private final PieceColor color;
 
-    public PieceSet(ArrayList<Piece> pieces, String color) {
+    public PieceSet(ArrayList<Piece> pieces, PieceColor color) {
         this.pieces = pieces;
         this.color = color;
     }
@@ -22,7 +22,7 @@ public class PieceSet {
         this.pieces = pieces;
     }
 
-    public String getColor() {
+    public PieceColor getColor() {
         return color;
     }
 }

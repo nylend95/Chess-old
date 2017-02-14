@@ -1,32 +1,27 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Jesper Nylend on 10.02.2017.
  * s305070
  */
-public class Board
-{
+public class Board {
     private Square[][] board;
     private PieceSet whitePieceSet;
     private PieceSet blackPieceSet;
-    ArrayList<Piece> whitePieces;
-    ArrayList<Piece> blackPieces;
+    private ArrayList<Piece> whitePieces;
+    private ArrayList<Piece> blackPieces;
 
-
-    public Board()
-    {
+    public Board() {
         whitePieces = new ArrayList<Piece>(16);
         blackPieces = new ArrayList<Piece>(16);
         board = new Square[8][8];
-        whitePieceSet = new PieceSet(whitePieces, "white");
-        blackPieceSet = new PieceSet(blackPieces, "black");
+        whitePieceSet = new PieceSet(whitePieces, PieceColor.WHITE);
+        blackPieceSet = new PieceSet(blackPieces, PieceColor.BLACK);
     }
 
-    public Square[][] getBoard()
-    {
+    public Square[][] getBoard() {
         return board;
     }
 }

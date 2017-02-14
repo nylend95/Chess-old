@@ -1,4 +1,7 @@
-package model;
+package model.pieces;
+
+import model.Piece;
+import model.PieceColor;
 
 /**
  * Created by mikke on 14-Feb-17.
@@ -6,10 +9,11 @@ package model;
 public class Pawn extends Piece {
     private boolean promoted;
     private Piece promotedTo;
-    private String moveDirection; // TODO do we need this?? Game engine should take care of this?
+    private final boolean moveUp;
 
-    public Pawn(String color, String square) {
+    public Pawn(PieceColor color, String square, boolean moveUp) {
         super(color, square);
+        this.moveUp = moveUp;
     }
 
     public boolean isPromoted() {
@@ -28,12 +32,8 @@ public class Pawn extends Piece {
         this.promotedTo = promotedTo;
     }
 
-    public String getMoveDirection() {
-        return moveDirection;
-    }
-
-    public void setMoveDirection(String moveDirection) {
-        this.moveDirection = moveDirection;
+    public boolean getMoveDirection() {
+        return moveUp;
     }
 
     @Override

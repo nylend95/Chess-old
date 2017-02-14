@@ -1,10 +1,13 @@
-package model;
+package model.pieces;
+
+import model.Piece;
+import model.PieceColor;
 
 /**
  * Created by mikke on 14-Feb-17.
  */
-public class Bishop extends Piece {
-    public Bishop(String color, String square) {
+public class Rook extends Piece {
+    public Rook(PieceColor color, String square) {
         super(color, square);
     }
 

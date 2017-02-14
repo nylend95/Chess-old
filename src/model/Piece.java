@@ -3,18 +3,18 @@ package model;
 /**
  * Created by mikke on 14-Feb-17.
  */
-abstract class Piece {
-    private final String color;
+public abstract class Piece {
+    private final PieceColor color;
     private String square;
     private boolean moved;
 
-    public Piece(String color, String square) {
+    public Piece(PieceColor color, String square) {
         this.color = color;
         this.square = square;
         this.moved = false;
     }
 
-    public String getColor() {
+    public PieceColor getColor() {
         return color;
     }
 

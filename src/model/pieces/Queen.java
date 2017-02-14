@@ -1,10 +1,13 @@
-package model;
+package model.pieces;
+
+import model.Piece;
+import model.PieceColor;
 
 /**
  * Created by mikke on 14-Feb-17.
  */
 public class Queen extends Piece {
-    public Queen(String color, String square) {
+    public Queen(PieceColor color, String square) {
         super(color, square);
     }
 

@@ -5,15 +5,15 @@ package model;
  * s305070
  */
 public class Player {
-    private final String color;
+    private final PieceColor color;
     private final PlayerEngine engine;
 
-    public Player(String color, PlayerEngine engine) {
+    public Player(PieceColor color, PlayerEngine engine) {
         this.color = color;
         this.engine = engine;
     }
 
-    public String getColor() {
+    public PieceColor getColor() {
         return color;
     }
 
