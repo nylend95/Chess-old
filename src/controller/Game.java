@@ -2,6 +2,7 @@ package controller;
 
 import javafx.fxml.Initializable;
 import model.Board;
+import model.Player;
 
 import java.net.URL;
 import java.util.ResourceBundle;
