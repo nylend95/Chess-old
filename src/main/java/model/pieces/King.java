@@ -1,8 +1,6 @@
-package main.model.pieces;
+package main.java.model.pieces;
 
-import main.model.PieceColor;
-import main.model.Square;
-
+import main.java.model.*;
 import java.util.ArrayList;
 
 /**

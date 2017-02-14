@@ -1,8 +1,9 @@
 package main.java.controller;
 
 import javafx.fxml.Initializable;
-import main.model.Board;
-import main.model.Player;
+import main.java.model.Board;
+import main.java.model.Player;
+
 
 import java.net.URL;
 import java.util.ResourceBundle;

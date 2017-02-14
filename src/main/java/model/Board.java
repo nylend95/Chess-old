@@ -1,6 +1,7 @@
-package main.model;
+package main.java.model;
 
-import main.model.pieces.Piece;
+
+import main.java.model.pieces.Piece;
 
 import java.util.ArrayList;
 
