@@ -1,7 +1,9 @@
-package model.pieces;
+package main.model.pieces;
 
-import model.PieceColor;
-import model.Square;
+import main.model.PieceColor;
+import main.model.Square;
+
+import java.util.ArrayList;
 
 /**
  * Created by mikke on 14-Feb-17.
@@ -37,8 +39,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void validMoves() {
-
+    public ArrayList<Square> validMoves(int[][] bitmap) {
+        return null;
     }
 
     @Override

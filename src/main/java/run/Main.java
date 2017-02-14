@@ -1,4 +1,4 @@
-package controller;
+package main.java.run;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +17,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/resources/gui.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/main/resources/gui.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("Chess - Jesper|Mikkel");
         stage.setResizable(false);

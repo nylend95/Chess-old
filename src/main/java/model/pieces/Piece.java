@@ -1,15 +1,17 @@
-package model.pieces;
+package main.model.pieces;
 
-import model.PieceColor;
-import model.Square;
+import main.model.PieceColor;
+import main.model.Square;
+
+import java.util.ArrayList;
 
 /**
  * Created by mikke on 14-Feb-17.
  */
 public abstract class Piece {
-    private final PieceColor color;
-    private Square square;
-    private boolean moved;
+    final PieceColor color;
+    Square square;
+    boolean moved;
 
     public Piece(PieceColor color, Square square) {
         this.color = color;
@@ -37,7 +39,7 @@ public abstract class Piece {
         this.moved = moved;
     }
 
-    public abstract void validMoves();
+    public abstract ArrayList<Square> validMoves(int[][] bitmap);
 
     public abstract void attackSquares();
 
