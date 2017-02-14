@@ -1,13 +1,13 @@
 package model.pieces;
 
-import model.Piece;
 import model.PieceColor;
+import model.Square;
 
 /**
  * Created by mikke on 14-Feb-17.
  */
 public class King extends Piece {
-    public King(PieceColor color, String square) {
+    public King(PieceColor color, Square square) {
         super(color, square);
     }
 

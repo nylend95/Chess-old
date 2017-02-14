@@ -1,6 +1,5 @@
 package model.pieces;
 
-import model.Piece;
 import model.PieceColor;
 
 /**

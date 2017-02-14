@@ -1,7 +1,7 @@
 package model.pieces;
 
-import model.Piece;
 import model.PieceColor;
+import model.Square;
 
 /**
  * Created by mikke on 14-Feb-17.
@@ -11,7 +11,7 @@ public class Pawn extends Piece {
     private Piece promotedTo;
     private final boolean moveUp;
 
-    public Pawn(PieceColor color, String square, boolean moveUp) {
+    public Pawn(PieceColor color, Square square, boolean moveUp) {
         super(color, square);
         this.moveUp = moveUp;
     }

@@ -1,14 +1,17 @@
-package model;
+package model.pieces;
+
+import model.PieceColor;
+import model.Square;
 
 /**
  * Created by mikke on 14-Feb-17.
  */
 public abstract class Piece {
     private final PieceColor color;
-    private String square;
+    private Square square;
     private boolean moved;
 
-    public Piece(PieceColor color, String square) {
+    public Piece(PieceColor color, Square square) {
         this.color = color;
         this.square = square;
         this.moved = false;
@@ -18,11 +21,11 @@ public abstract class Piece {
         return color;
     }
 
-    public String getSquare() {
+    public Square getSquare() {
         return square;
     }
 
-    public void setSquare(String square) {
+    public void setSquare(Square square) {
         this.square = square;
     }
 

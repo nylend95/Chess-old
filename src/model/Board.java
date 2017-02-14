@@ -1,5 +1,7 @@
 package model;
 
+import model.pieces.Piece;
+
 import java.util.ArrayList;
 
 /**
