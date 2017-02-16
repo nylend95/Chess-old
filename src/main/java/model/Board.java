@@ -13,22 +13,22 @@ import java.util.Arrays;
 public class Board {
     private Square[][] board;
     private int[][] bitmap;
-    private PieceSet whitePieceSet;
-    private PieceSet blackPieceSet;
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
 
-    //TODO: Skal man gjøre det slik?
     public Board() {
         resetBoard();
     }
 
-    public Board(ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces){
+    public Board(ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces) {
         this.whitePieces = whitePieces;
         this.blackPieces = blackPieces;
+
+        board = new Square[8][8];
+        bitmap = new int[8][8];
     }
 
-    public void resetBoard(){
+    public void resetBoard() {
 
         whitePieces = new ArrayList<>(16);
         blackPieces = new ArrayList<>(16);
@@ -62,8 +62,6 @@ public class Board {
 
         board = new Square[8][8]; //column | row
         bitmap = new int[8][8];
-        whitePieceSet = new PieceSet(whitePieces, PieceColor.WHITE);
-        blackPieceSet = new PieceSet(blackPieces, PieceColor.BLACK);
         generateBitmap();
     }
 

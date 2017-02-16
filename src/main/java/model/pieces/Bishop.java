@@ -2,7 +2,6 @@ package main.java.model.pieces;
 
 import main.java.model.PieceColor;
 import main.java.model.Square;
-import main.java.model.pieces.Piece;
 
 import java.util.ArrayList;
 
@@ -26,12 +25,12 @@ public class Bishop extends Piece {
         ArrayList<Square> validSquares = new ArrayList<>();
 
         for (int[] d : dir) {
-            for (int i = 1; i <= 8; i++) {
+            for (int i = 1; i <= 7; i++) {
                 int x_new = x_start + i * d[0];
                 int y_new = y_start + i * d[1];
 
                 // Out of bounds
-                if (x_new < 0 || x_new > 8 || y_new < 0 || y_new > 8) {
+                if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7) {
                     break;
                 }
 
