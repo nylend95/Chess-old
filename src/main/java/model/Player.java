@@ -6,7 +6,7 @@ import main.java.controller.IControls;
  * Created by Jesper Nylend on 10.02.2017.
  * s305070
  */
-public /*abstract*/ class Player {
+public abstract class Player {
     private String name;
     private final PieceColor color;
     private final IControls controls;
@@ -27,5 +27,9 @@ public /*abstract*/ class Player {
 
     public PieceColor getColor() {
         return color;
+    }
+
+    private void makeMove(Move move) {
+        controls.doMove(move);
     }
 }
