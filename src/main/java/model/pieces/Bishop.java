@@ -36,15 +36,15 @@ public class Bishop extends Piece {
                 }
 
                 // Capture or crash in own piece
-                if (bitmap[x_new][y_new] != 0) {
-                    if (bitmap[x_new][y_new] != selfValue) {
-                        validSquares.add(new Square(x_new, y_new));
+                if (bitmap[y_new][x_new] != 0) {
+                    if (bitmap[y_new][x_new] != selfValue) {
+                        validSquares.add(new Square(y_new, x_new));
                     }
                     break;
                 }
 
                 // Valid move
-                validSquares.add(new Square(x_new, y_new));
+                validSquares.add(new Square(y_new, x_new));
             }
         }
         return validSquares;
