@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.java.model.Board;
 import main.java.model.Player;
@@ -32,6 +33,7 @@ public class Game implements Initializable {
 
         GraphicsContext gc = cv.getGraphicsContext2D();
         initDraw(gc);
+        draw(gc);
     }
 
     private void initDraw(GraphicsContext gc) {
@@ -65,7 +67,8 @@ public class Game implements Initializable {
     }
 
     private void draw(GraphicsContext gc) {
-
+        Image blackPawn = new Image("pieces/black_pawn.png");
+        gc.drawImage(blackPawn, 101, 1, 98, 98);
 
 //        for (int c = 0; c < board.getBoard().length; c++) {
 //            for (int r = 0; r < board.getBoard()[0].length; r++) {
