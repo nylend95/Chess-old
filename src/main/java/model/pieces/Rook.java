@@ -16,7 +16,8 @@ public class Rook extends Piece {
 
     @Override
     public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
-        return null;
+        int[][] dir = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+        return checkDirections(dir, bitmapPositions);
     }
 
     @Override

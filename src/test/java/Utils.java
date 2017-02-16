@@ -18,6 +18,9 @@ class Utils {
                     exists = true;
                 }
             }
+            if(!exists){
+                System.out.println(gen_square);
+            }
             Assert.assertTrue(exists);
         }
 

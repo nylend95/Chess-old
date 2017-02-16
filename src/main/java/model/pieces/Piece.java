@@ -41,6 +41,38 @@ public abstract class Piece {
         this.moved = moved;
     }
 
+    ArrayList<Square> checkDirections(int[][] dir, int[][] bitmapPositions){
+        ArrayList<Square> validSquares = new ArrayList<>();
+
+        int selfValue = (color == PieceColor.WHITE) ? 1 : 0;
+        int xStart = square.getColumn();
+        int yStart = square.getRow();
+
+        for (int[] d : dir) {
+            for (int i = 1; i <= 7; i++) {
+                int x_new = xStart + i * d[0];
+                int y_new = yStart + i * d[1];
+
+                // Out of bounds
+                if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7) {
+                    break;
+                }
+
+                // Capture or crash in own piece
+                if (bitmapPositions[y_new][x_new] != 0) {
+                    if (bitmapPositions[y_new][x_new] != selfValue) {
+                        validSquares.add(new Square(y_new, x_new));
+                    }
+                    break;
+                }
+
+                // Valid move
+                validSquares.add(new Square(y_new, x_new));
+            }
+        }
+        return validSquares;
+    }
+
     public abstract ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions);
 
     public abstract ArrayList<Square> attackSquares(int[][] bitmapPositions);
