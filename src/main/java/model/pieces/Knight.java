@@ -34,4 +34,9 @@ public class Knight extends Piece {
     public boolean toBeCaptured() {
         return false;
     }
+
+    @Override
+    public String toString(){
+        return "Knight, " + super.toString();
+    }
 }

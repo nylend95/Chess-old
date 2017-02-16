@@ -4,9 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.java.model.Board;
 import main.java.model.Player;
+import main.java.model.Square;
 
 
 import java.net.URL;
@@ -65,9 +67,14 @@ public class Game implements Initializable {
         }
     }
 
-    public void draw(GraphicsContext gc){
+    private void draw(GraphicsContext gc) {
+
+
+//        for (int c = 0; c < board.getBoard().length; c++) {
+//            for (int r = 0; r < board.getBoard()[0].length; r++) {
+//
+//            }
+//        }
 
     }
-
-
 }

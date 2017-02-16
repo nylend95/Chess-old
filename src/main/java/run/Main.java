@@ -21,6 +21,9 @@ public class Main extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Chess - Jesper|Mikkel");
         stage.setResizable(false);
+        stage.setOnCloseRequest(e -> {
+            System.exit(0);
+        });
         stage.show();
     }
 }

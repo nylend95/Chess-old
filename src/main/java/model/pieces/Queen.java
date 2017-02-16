@@ -34,4 +34,9 @@ public class Queen extends Piece {
     public boolean toBeCaptured() {
         return false;
     }
+
+    @Override
+    public String toString(){
+        return "Queen, " + super.toString();
+    }
 }

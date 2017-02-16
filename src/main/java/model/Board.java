@@ -4,6 +4,7 @@ package main.java.model;
 import main.java.model.pieces.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Jesper Nylend on 10.02.2017.
@@ -20,6 +21,7 @@ public class Board {
     public Board() {
         whitePieces = new ArrayList<>(16);
         blackPieces = new ArrayList<>(16);
+
         //White pieces
         for (int i = 0; i < 8; i++) {
             whitePieces.add(new Pawn(PieceColor.WHITE, new Square(6, i), false));
@@ -32,12 +34,11 @@ public class Board {
         whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 5)));
         whitePieces.add(new Queen(PieceColor.WHITE, new Square(7, 3)));
         whitePieces.add(new King(PieceColor.WHITE, new Square(7, 4)));
+
         //Black pieces
         for (int i = 0; i < 8; i++) {
             blackPieces.add(new Pawn(PieceColor.BLACK, new Square(1, i), false));
         }
-
-
         blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 0)));
         blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 7)));
         blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 1)));
@@ -52,6 +53,10 @@ public class Board {
         bitmap = new int[8][8];
         whitePieceSet = new PieceSet(whitePieces, PieceColor.WHITE);
         blackPieceSet = new PieceSet(blackPieces, PieceColor.BLACK);
+
+        System.out.println(whitePieces.toString());
+        System.out.println(blackPieces.toString());
+
     }
 
     //TODO: Lag bitmap

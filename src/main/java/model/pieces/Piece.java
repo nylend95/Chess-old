@@ -11,9 +11,11 @@ import java.util.ArrayList;
  * Created by mikke on 14-Feb-17.
  */
 public abstract class Piece {
+
     final PieceColor color;
     Square square;
     boolean moved;
+
 //TODO: Trenger denne color? siden Piece kun brukes i PieceSet og color er der?
     public Piece(PieceColor color, Square square) {
         this.color = color;
@@ -49,5 +51,8 @@ public abstract class Piece {
 
     public abstract boolean toBeCaptured();
 
-
+    @Override
+    public String toString() {
+        return getColor() + ", " + getSquare().toString();
+    }
 }

@@ -64,4 +64,9 @@ public class Bishop extends Piece {
     public boolean toBeCaptured() {
         return false;
     }
+
+    @Override
+    public String toString(){
+        return "Bishop, " + super.toString();
+    }
 }

@@ -30,4 +30,10 @@ public class King extends Piece {
     public boolean toBeCaptured() {
         return false;
     }
+
+    @Override
+    public String toString(){
+        return "King, " + super.toString();
+    }
+
 }
