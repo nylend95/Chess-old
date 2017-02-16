@@ -1,19 +1,16 @@
 package main.java.controller;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import main.java.model.*;
 import main.java.model.pieces.*;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
@@ -23,6 +20,7 @@ import java.util.ResourceBundle;
 public class GameEngine implements Initializable, IControls {
     private static final double IMAGE_SIZE = 98;
     private static final int CELL_SIZE = 100;
+    private static final double PADDING = 1.0;
     private Board board;
     private Player p1;
     private Player p2;
@@ -40,7 +38,7 @@ public class GameEngine implements Initializable, IControls {
         ArrayList<Piece> black = new ArrayList<>();
         Bishop bishop = new Bishop(PieceColor.WHITE, new Square(4, 4));
         Bishop bishop1 = new Bishop(PieceColor.BLACK, new Square(2, 2));
-        Queen queen = new Queen(PieceColor.WHITE, new Square(5,5));
+        Queen queen = new Queen(PieceColor.WHITE, new Square(5, 5));
         white.add(queen);
         white.add(bishop);
         black.add(bishop1);
@@ -53,16 +51,15 @@ public class GameEngine implements Initializable, IControls {
         GraphicsContext gc = cv.getGraphicsContext2D();
 
         cv.setOnMouseClicked(event -> {
-                if (selectedPiece == null){
-                    System.out.println("trykket");
-                    selectPieceToMove(event.getX(),event.getY(), gc);
+                    // TODO there is a bug here! Have to check what is inside the square instead. (try to click on bishop, and then on queen two times)
+                    if (selectedPiece == null) {
+                        System.out.println("trykket");
+                        selectPieceToMove(event.getX(), event.getY(), gc);
+                    } else {
+                        drawMove(event.getX(), event.getY());
+                    }
                 }
-                else{
-                    drawMove(event.getX(),event.getY());
-                }
-            }
         );
-
 
         initDraw(gc);
         draw(gc);
@@ -79,25 +76,25 @@ public class GameEngine implements Initializable, IControls {
     private void initDraw(GraphicsContext gc) {
         for (int c = 0; c < 9; c++) {
             for (int r = 0; r < 9; r++) {
-                gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE*8);
+                gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
             }
         }
         for (int c = 0; c < 9; c++) {
             for (int r = 0; r < 9; r++) {
-                gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE*8, r * CELL_SIZE);
+                gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
             }
         }
-        for (int c = 0; c < CELL_SIZE*9; c += CELL_SIZE) {
-            if ((c - CELL_SIZE) % (CELL_SIZE*2) != 0) {
-                for (int r = 0; r < CELL_SIZE*9; r += CELL_SIZE) {
-                    if (r % (CELL_SIZE*2) != 0) {
+        for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
+            if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
+                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+                    if (r % (CELL_SIZE * 2) != 0) {
                         gc.setFill(Color.GREY);
                         gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
                     }
                 }
             } else {
-                for (int r = 0; r < CELL_SIZE*9; r += CELL_SIZE) {
-                    if (r % (CELL_SIZE*2) == 0) {
+                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+                    if (r % (CELL_SIZE * 2) == 0) {
                         gc.setFill(Color.GREY);
                         gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
                     }
@@ -116,55 +113,47 @@ public class GameEngine implements Initializable, IControls {
         ArrayList<Piece> blackPieces = board.getBlackPieces();
 
         for (Piece piece : whitePieces) {
-            if (piece instanceof Pawn) {
-                gc.drawImage(new Image("pieces/white_pawn.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Bishop) {
-                gc.drawImage(new Image("pieces/white_bishop.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Knight) {
-                gc.drawImage(new Image("pieces/white_knight.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Rook) {
-                gc.drawImage(new Image("pieces/white_rook.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Queen) {
-                gc.drawImage(new Image("pieces/white_queen.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else {
-                gc.drawImage(new Image("pieces/white_king.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            }
+            drawPiece(piece, gc);
         }
         for (Piece piece : blackPieces) {
-            if (piece instanceof Pawn) {
-                gc.drawImage(new Image("pieces/black_pawn.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Bishop) {
-                gc.drawImage(new Image("pieces/black_bishop.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Knight) {
-                gc.drawImage(new Image("pieces/black_knight.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Rook) {
-                gc.drawImage(new Image("pieces/black_rook.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else if (piece instanceof Queen) {
-                gc.drawImage(new Image("pieces/black_queen.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            } else {
-                gc.drawImage(new Image("pieces/black_king.png"), (piece.getSquare().getColumn() * CELL_SIZE) + 1, (piece.getSquare().getRow() * CELL_SIZE) + 1, IMAGE_SIZE, IMAGE_SIZE);
-            }
+            drawPiece(piece, gc);
         }
     }
 
-    private void selectPieceToMove(double x, double y, GraphicsContext gc){
-        int row = (int) y/CELL_SIZE;
-        int column = (int) x/CELL_SIZE;
+    private void drawPiece(Piece piece, GraphicsContext gc) {
+        if (piece instanceof Pawn) {
+            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_pawn.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        } else if (piece instanceof Bishop) {
+            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_bishop.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        } else if (piece instanceof Knight) {
+            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_knight.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        } else if (piece instanceof Rook) {
+            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_rook.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        } else if (piece instanceof Queen) {
+            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_queen.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        } else {
+            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_king.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        }
+    }
+
+    private void selectPieceToMove(double x, double y, GraphicsContext gc) {
+        int row = (int) y / CELL_SIZE;
+        int column = (int) x / CELL_SIZE;
         Square tmp = new Square(row, column);
         System.out.println(tmp);
-        if (whiteToMove){
+        if (whiteToMove) {
             System.out.println("White to move");
             for (Piece piece : board.getWhitePieces()) {
                 System.out.println(piece);
-                if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()){
+                if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()) {
                     selectedPiece = piece;
                     System.out.println(selectedPiece.toString());
                     drawPossibleMoves(selectedPiece, gc);
                 }
             }
-        }else {
+        } else {
             for (Piece piece : board.getBlackPieces()) {
-                if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()){
+                if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()) {
                     selectedPiece = piece;
                     drawPossibleMoves(selectedPiece, gc);
                 }
@@ -173,21 +162,27 @@ public class GameEngine implements Initializable, IControls {
     }
 
     //TODO: implement this method
-    private void drawMove(double x, double y){
-
+    private void drawMove(double x, double y) {
 
 
         selectedPiece = null;
     }
 
     //TODO: Fix drawing on other pieces && new PNG
-    private void drawPossibleMoves(Piece piece, GraphicsContext gc){
+    private void drawPossibleMoves(Piece piece, GraphicsContext gc) {
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
 
         ArrayList<Square> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
-        System.out.println("Possible Moves: " + Arrays.toString(possibleMoves.toArray()));
+        int[][] bitmapPositions = board.generateBitmapPositions();
+
         for (Square validSquare : possibleMoves) {
-            gc.drawImage(new Image("circle.png"), (validSquare.getColumn() * CELL_SIZE) + 24.5, (validSquare.getRow() * CELL_SIZE) + 24.5, IMAGE_SIZE/2, IMAGE_SIZE/2);
+            int vx = validSquare.getColumn();
+            int vy = validSquare.getRow();
+            if (bitmapPositions[vy][vx] != 0) {
+                gc.drawImage(new Image("attack_sprite.png"), (validSquare.getColumn() * CELL_SIZE) + PADDING, (validSquare.getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+            } else {
+                gc.drawImage(new Image("move_sprite.png"), (validSquare.getColumn() * CELL_SIZE) + PADDING, (validSquare.getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+            }
         }
     }
 }

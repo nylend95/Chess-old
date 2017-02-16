@@ -25,6 +25,10 @@ public abstract class Piece {
         return color;
     }
 
+    public String getColorString() {
+        return (color == PieceColor.WHITE) ? "white" : "black";
+    }
+
     public Square getSquare() {
         return square;
     }
@@ -41,7 +45,7 @@ public abstract class Piece {
         this.moved = moved;
     }
 
-    ArrayList<Square> checkDirections(int[][] dir, int[][] bitmapPositions){
+    ArrayList<Square> checkDirections(int[][] dir, int[][] bitmapPositions) {
         ArrayList<Square> validSquares = new ArrayList<>();
 
         int selfValue = (color == PieceColor.WHITE) ? 1 : 0;

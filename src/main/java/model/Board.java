@@ -1,7 +1,6 @@
 package main.java.model;
 
 
-import javafx.scene.chart.PieChart;
 import main.java.model.pieces.*;
 
 import java.util.ArrayList;
@@ -62,21 +61,12 @@ public class Board {
 
     public boolean movePiece(Move move) {
         Piece pieceToBeMoved = move.getPiece();
-        if (pieceToBeMoved.getColor() == PieceColor.WHITE) {
-            for (Piece piece : whitePieces) {
-                if (pieceToBeMoved.equals(piece)) {
-                    piece.setSquare(move.getEndSquare());
-                    piece.setMoved(true);
-                    return true;
-                }
-            }
-        } else {
-            for (Piece piece : blackPieces) {
-                if (pieceToBeMoved.equals(piece)) {
-                    piece.setSquare(move.getEndSquare());
-                    piece.setMoved(true);
-                    return true;
-                }
+        ArrayList<Piece> selectedList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
+        for (Piece piece : selectedList) {
+            if (pieceToBeMoved.equals(piece)) {
+                piece.setSquare(move.getEndSquare());
+                piece.setMoved(true);
+                return true;
             }
         }
         return false;
@@ -104,7 +94,7 @@ public class Board {
 
         int[][] bitmap = new int[8][8];
 
-        if(pieceColor == PieceColor.BLACK) {
+        if (pieceColor == PieceColor.BLACK) {
             for (Piece piece : blackPieces) {
                 ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
                 if (attackingPositions != null) {
@@ -113,7 +103,7 @@ public class Board {
                     }
                 }
             }
-        }else {
+        } else {
             for (Piece piece : whitePieces) {
                 ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
                 if (attackingPositions != null) {
