@@ -44,7 +44,6 @@ public class BishopTest {
 
         testMoves(validMoves, generatedValidMoves);
 
-
         white = new ArrayList<>();
         bishop = new Bishop(PieceColor.WHITE, new Square(4, 4));
         white.add(bishop);
@@ -70,7 +69,6 @@ public class BishopTest {
 
         testMoves(validMoves, generatedValidMoves);
 
-
         white = new ArrayList<>();
         bishop = new Bishop(PieceColor.WHITE, new Square(4, 4));
         white.add(bishop);
@@ -93,6 +91,5 @@ public class BishopTest {
         generatedValidMoves = bishop.validMoves(board.generateBitmap());
 
         testMoves(validMoves, generatedValidMoves);
-
     }
 }

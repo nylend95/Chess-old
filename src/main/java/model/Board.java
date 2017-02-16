@@ -4,7 +4,6 @@ package main.java.model;
 import main.java.model.pieces.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Jesper Nylend on 10.02.2017.
@@ -59,10 +58,31 @@ public class Board {
         blackPieces.add(new Queen(PieceColor.BLACK, new Square(0, 3)));
         blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
 
-
         board = new Square[8][8]; //column | row
         bitmap = new int[8][8];
         generateBitmap();
+    }
+
+    public boolean movePiece(Move move) {
+        Piece pieceToBeMoved = move.getPiece();
+        if (pieceToBeMoved.getColor() == PieceColor.WHITE) {
+            for (Piece piece : whitePieces) {
+                if (pieceToBeMoved.equals(piece)) {
+                    piece.setSquare(move.getEndSquare());
+                    piece.setMoved(true);
+                    return true;
+                }
+            }
+        } else {
+            for (Piece piece : blackPieces) {
+                if (pieceToBeMoved.equals(piece)) {
+                    piece.setSquare(move.getEndSquare());
+                    piece.setMoved(true);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public int[][] generateBitmap() {
@@ -77,14 +97,6 @@ public class Board {
             bitmap[white.getSquare().getRow()][white.getSquare().getColumn()] = 1;
         }
 
-        for (int r = 0; r < bitmap.length; r++) {
-            for (int c = 0; c < bitmap[0].length; c++) {
-                int tmp = bitmap[r][c];
-                if (tmp != -1 && tmp != 1) {
-                    bitmap[r][c] = 0;
-                }
-            }
-        }
         return bitmap;
     }
 

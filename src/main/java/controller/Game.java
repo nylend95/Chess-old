@@ -7,6 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.java.model.Board;
+import main.java.model.Move;
+import main.java.model.PieceColor;
 import main.java.model.Player;
 import main.java.model.pieces.*;
 
@@ -18,7 +20,7 @@ import java.util.ResourceBundle;
  * Created by Jesper Nylend on 10.02.2017.
  * s305070
  */
-public class Game implements Initializable {
+public class Game implements Initializable, IControls {
     private static final double CELL_SIZE = 98;
     private Board board; //Column | Row
     private Player p1;
@@ -32,6 +34,9 @@ public class Game implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         board = new Board();
+
+        p1 = new Player("White", PieceColor.WHITE, this);
+        p2 = new Player("Black", PieceColor.WHITE, this);
 
         GraphicsContext gc = cv.getGraphicsContext2D();
         initDraw(gc);
@@ -68,23 +73,29 @@ public class Game implements Initializable {
         }
     }
 
+    public boolean doMove(Move move) {
+        // TODO validate move! Return false if this move is not valid!
+        board.movePiece(move);
+        return true;
+    }
+
     private void draw(GraphicsContext gc) {
         ArrayList<Piece> whitePieces = board.getWhitePieces();
         ArrayList<Piece> blackPieces = board.getBlackPieces();
 
         for (int i = 0; i < whitePieces.size(); i++) {
             Piece piece = whitePieces.get(i);
-            if (piece instanceof Pawn){
+            if (piece instanceof Pawn) {
                 gc.drawImage(new Image("pieces/white_pawn.png"), (piece.getSquare().getRow() * 100) + 1, (piece.getSquare().getColumn() * 100) + 1, CELL_SIZE, CELL_SIZE);
-            }else if (piece instanceof Bishop){
+            } else if (piece instanceof Bishop) {
                 gc.drawImage(new Image("pieces/white_bishop.png"), (piece.getSquare().getRow() * 100) + 1, (piece.getSquare().getColumn() * 100) + 1, CELL_SIZE, CELL_SIZE);
-            }else if (piece instanceof Knight){
+            } else if (piece instanceof Knight) {
                 gc.drawImage(new Image("pieces/white_knight.png"), (piece.getSquare().getRow() * 100) + 1, (piece.getSquare().getColumn() * 100) + 1, CELL_SIZE, CELL_SIZE);
-            }else if (piece instanceof Rook){
+            } else if (piece instanceof Rook) {
                 gc.drawImage(new Image("pieces/white_rook.png"), (piece.getSquare().getRow() * 100) + 1, (piece.getSquare().getColumn() * 100) + 1, CELL_SIZE, CELL_SIZE);
-            }else if (piece instanceof Queen){
+            } else if (piece instanceof Queen) {
                 gc.drawImage(new Image("pieces/white_queen.png"), (piece.getSquare().getRow() * 100) + 1, (piece.getSquare().getColumn() * 100) + 1, CELL_SIZE, CELL_SIZE);
-            }else{
+            } else {
                 gc.drawImage(new Image("pieces/white_king.png"), (piece.getSquare().getRow() * 100) + 1, (piece.getSquare().getColumn() * 100) + 1, CELL_SIZE, CELL_SIZE);
             }
         }
