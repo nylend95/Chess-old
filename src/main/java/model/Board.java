@@ -107,15 +107,19 @@ public class Board {
         if(pieceColor == PieceColor.BLACK) {
             for (Piece piece : blackPieces) {
                 ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
-                for (Square attackingSquare : attackingPositions) {
-                    bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                if (attackingPositions != null) {
+                    for (Square attackingSquare : attackingPositions) {
+                        bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                    }
                 }
             }
         }else {
             for (Piece piece : whitePieces) {
                 ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
-                for (Square attackingSquare : attackingPositions) {
-                    bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                if (attackingPositions != null) {
+                    for (Square attackingSquare : attackingPositions) {
+                        bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                    }
                 }
             }
         }
