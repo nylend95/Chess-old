@@ -28,6 +28,9 @@ public class Game implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        board = new Board();
+
         GraphicsContext gc = cv.getGraphicsContext2D();
         initDraw(gc);
     }
@@ -61,4 +64,10 @@ public class Game implements Initializable {
             }
         }
     }
+
+    public void draw(GraphicsContext gc){
+
+    }
+
+
 }

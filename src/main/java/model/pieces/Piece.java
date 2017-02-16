@@ -14,7 +14,7 @@ public abstract class Piece {
     final PieceColor color;
     Square square;
     boolean moved;
-
+//TODO: Trenger denne color? siden Piece kun brukes i PieceSet og color er der?
     public Piece(PieceColor color, Square square) {
         this.color = color;
         this.square = square;
