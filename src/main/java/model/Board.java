@@ -20,6 +20,16 @@ public class Board {
 
     //TODO: Skal man gjøre det slik?
     public Board() {
+        resetBoard();
+    }
+
+    public Board(ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces){
+        this.whitePieces = whitePieces;
+        this.blackPieces = blackPieces;
+    }
+
+    public void resetBoard(){
+
         whitePieces = new ArrayList<>(16);
         blackPieces = new ArrayList<>(16);
 
@@ -54,13 +64,10 @@ public class Board {
         bitmap = new int[8][8];
         whitePieceSet = new PieceSet(whitePieces, PieceColor.WHITE);
         blackPieceSet = new PieceSet(blackPieces, PieceColor.BLACK);
-
-        System.out.println(whitePieces.toString());
-        System.out.println(blackPieces.toString());
-
+        generateBitmap();
     }
 
-    public int[][] getBitmap() {
+    public int[][] generateBitmap() {
         //-1 for black pieces
         //+1 for white pieces
 
@@ -80,6 +87,10 @@ public class Board {
                 }
             }
         }
+        return bitmap;
+    }
+
+    public int[][] getBitmap() {
         return bitmap;
     }
 
