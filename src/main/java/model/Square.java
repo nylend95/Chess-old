@@ -23,7 +23,7 @@ public class Square {
 
     @Override
     public String toString(){
-        return "[" + getColumn() + ", " + getRow() + "] | ";
+        return "[" + getRow() + ", " + getColumn() + "] | ";
     }
 
 }
