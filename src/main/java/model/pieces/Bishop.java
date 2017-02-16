@@ -14,7 +14,12 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public ArrayList<Square> validMoves(int[][] bitmap) {
+    public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackinPositions) {
         int x_start = square.getColumn();
         int y_start = square.getRow();
 
@@ -35,8 +40,8 @@ public class Bishop extends Piece {
                 }
 
                 // Capture or crash in own piece
-                if (bitmap[y_new][x_new] != 0) {
-                    if (bitmap[y_new][x_new] != selfValue) {
+                if (bitmapPositions[y_new][x_new] != 0) {
+                    if (bitmapPositions[y_new][x_new] != selfValue) {
                         validSquares.add(new Square(y_new, x_new));
                     }
                     break;
@@ -50,11 +55,6 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public void attackSquares() {
-
-    }
-
-    @Override
     public void captureFreeMoves() {
 
     }
@@ -65,7 +65,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Bishop, " + super.toString();
     }
 }

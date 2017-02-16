@@ -1,6 +1,7 @@
 package main.java.model.pieces;
 
 import main.java.model.*;
+
 import java.util.ArrayList;
 
 /**
@@ -12,13 +13,13 @@ public class King extends Piece {
     }
 
     @Override
-    public ArrayList<Square> validMoves(int[][] bitmap) {
+    public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         return null;
     }
 
     @Override
-    public void attackSquares() {
-
+    public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
+        return null;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class King extends Piece {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "King, " + super.toString();
     }
 

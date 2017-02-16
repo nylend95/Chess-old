@@ -1,6 +1,7 @@
 package main.java.model;
 
 
+import javafx.scene.chart.PieChart;
 import main.java.model.pieces.*;
 
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
  */
 public class Board {
     private Square[][] board;
-    private int[][] bitmap;
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
 
@@ -24,7 +24,6 @@ public class Board {
         this.blackPieces = blackPieces;
 
         board = new Square[8][8];
-        bitmap = new int[8][8];
     }
 
     public void resetBoard() {
@@ -59,8 +58,6 @@ public class Board {
         blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
 
         board = new Square[8][8]; //column | row
-        bitmap = new int[8][8];
-        generateBitmap();
     }
 
     public boolean movePiece(Move move) {
@@ -85,9 +82,10 @@ public class Board {
         return false;
     }
 
-    public int[][] generateBitmap() {
+    public int[][] generateBitmapPositions() {
         //-1 for black pieces
         //+1 for white pieces
+        int[][] bitmap = new int[8][8];
 
         for (Piece black : blackPieces) {
             bitmap[black.getSquare().getRow()][black.getSquare().getColumn()] = -1;
@@ -100,7 +98,28 @@ public class Board {
         return bitmap;
     }
 
-    public int[][] getBitmap() {
+    public int[][] generateBitmapAttackingPositions(PieceColor pieceColor) {
+        //1 for attacking position
+        int[][] bitmapPositions = generateBitmapPositions();
+
+        int[][] bitmap = new int[8][8];
+
+        if(pieceColor == PieceColor.BLACK) {
+            for (Piece piece : blackPieces) {
+                ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
+                for (Square attackingSquare : attackingPositions) {
+                    bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                }
+            }
+        }else {
+            for (Piece piece : whitePieces) {
+                ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
+                for (Square attackingSquare : attackingPositions) {
+                    bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                }
+            }
+        }
+
         return bitmap;
     }
 

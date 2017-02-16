@@ -1,7 +1,6 @@
 package main.java.model.pieces;
 
 
-
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
@@ -42,9 +41,9 @@ public abstract class Piece {
         this.moved = moved;
     }
 
-    public abstract ArrayList<Square> validMoves(int[][] bitmap);
+    public abstract ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions);
 
-    public abstract void attackSquares();
+    public abstract ArrayList<Square> attackSquares(int[][] bitmapPositions);
 
     public abstract void captureFreeMoves();
 

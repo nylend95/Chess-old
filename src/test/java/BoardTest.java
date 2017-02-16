@@ -29,7 +29,7 @@ public class BoardTest {
             {1, 1, 1, 1, 1, 1, 1, 1}};
 
         Board board = new Board();
-        Assert.assertEquals(testmap, board.getBitmap());
+        Assert.assertEquals(testmap, board.generateBitmapPositions());
 
     }
 

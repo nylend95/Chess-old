@@ -40,7 +40,7 @@ public class BishopTest {
         validMoves.add(new Square(6, 6));
         validMoves.add(new Square(7, 7));
 
-        ArrayList<Square> generatedValidMoves = bishop.validMoves(board.generateBitmap());
+        ArrayList<Square> generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
 
         testMoves(validMoves, generatedValidMoves);
 
@@ -65,7 +65,7 @@ public class BishopTest {
         validMoves.add(new Square(6, 6));
         validMoves.add(new Square(7, 7));
 
-        generatedValidMoves = bishop.validMoves(board.generateBitmap());
+        generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
 
         testMoves(validMoves, generatedValidMoves);
 
@@ -88,7 +88,7 @@ public class BishopTest {
         validMoves.add(new Square(6, 6));
         validMoves.add(new Square(7, 7));
 
-        generatedValidMoves = bishop.validMoves(board.generateBitmap());
+        generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
 
         testMoves(validMoves, generatedValidMoves);
     }
