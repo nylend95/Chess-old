@@ -17,6 +17,7 @@ public class Board {
     private PieceSet blackPieceSet;
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
+
     //TODO: Skal man gjøre det slik?
     public Board() {
         whitePieces = new ArrayList<>(16);
@@ -49,7 +50,7 @@ public class Board {
         blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
 
 
-        board = new Square[8][8];
+        board = new Square[8][8]; //column | row
         bitmap = new int[8][8];
         whitePieceSet = new PieceSet(whitePieces, PieceColor.WHITE);
         blackPieceSet = new PieceSet(blackPieces, PieceColor.BLACK);
@@ -59,8 +60,26 @@ public class Board {
 
     }
 
-    //TODO: Lag bitmap
     public int[][] getBitmap() {
+        //-1 for black pieces
+        //+1 for white pieces
+
+        for (Piece black : blackPieces) {
+            bitmap[black.getSquare().getRow()][black.getSquare().getColumn()] = -1;
+        }
+
+        for (Piece white : whitePieces) {
+            bitmap[white.getSquare().getRow()][white.getSquare().getColumn()] = 1;
+        }
+
+        for (int r = 0; r < bitmap.length; r++) {
+            for (int c = 0; c < bitmap[0].length; c++) {
+                int tmp = bitmap[r][c];
+                if (tmp != -1 && tmp != 1) {
+                    bitmap[r][c] = 0;
+                }
+            }
+        }
         return bitmap;
     }
 

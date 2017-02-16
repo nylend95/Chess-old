@@ -4,12 +4,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.java.model.Board;
 import main.java.model.Player;
-import main.java.model.Square;
-
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +17,7 @@ import java.util.ResourceBundle;
  */
 public class Game implements Initializable {
     private static final double CELL_SIZE = 98;
-    private Board board;
+    private Board board; //Column | Row
     private Player p1;
     private Player p2;
 
