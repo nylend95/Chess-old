@@ -95,4 +95,12 @@ public class Board {
     public Square[][] getBoard() {
         return board;
     }
+
+    public ArrayList<Piece> getWhitePieces() {
+        return whitePieces;
+    }
+
+    public ArrayList<Piece> getBlackPieces() {
+        return blackPieces;
+    }
 }
