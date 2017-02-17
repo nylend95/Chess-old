@@ -56,7 +56,6 @@ public class GameEngine implements Initializable, IControls {
         GraphicsContext gc = cv.getGraphicsContext2D();
 
         cv.setOnMouseClicked(event -> {
-                    // TODO there is a bug here! Have to check what is inside the square instead. (try to click on bishop, and then on queen two times)
                     if (selectedPiece == null) {
                         selectPieceToMove(event.getX(), event.getY(), gc);
                     } else {
@@ -81,16 +80,11 @@ public class GameEngine implements Initializable, IControls {
         for (int c = 0; c < 9; c++) {
             for (int r = 0; r < 9; r++) {
                 gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
-            }
-        }
-        for (int c = 0; c < 9; c++) {
-            for (int r = 0; r < 9; r++) {
                 gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
             }
         }
 
         //TODO: Optimalize this code
-        //grey squares
         for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
             if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
                 for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
@@ -107,9 +101,6 @@ public class GameEngine implements Initializable, IControls {
                     }
                 }
             }
-        }
-        //white squares
-        for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
             if (c % (CELL_SIZE * 2) != 0) {
                 for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
                     if (r % (CELL_SIZE * 2) != 0) {
