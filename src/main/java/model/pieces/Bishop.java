@@ -21,7 +21,7 @@ public class Bishop extends Piece {
     @Override
     public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackinPositions) {
         int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
-        return checkDirections(dir, bitmapPositions);
+        return checkDirections(dir, bitmapPositions, 7);
     }
 
     @Override

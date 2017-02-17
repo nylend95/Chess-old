@@ -45,7 +45,7 @@ public abstract class Piece {
         this.moved = moved;
     }
 
-    ArrayList<Square> checkDirections(int[][] dir, int[][] bitmapPositions) {
+    ArrayList<Square> checkDirections(int[][] dir, int[][] bitmapPositions, int maxSteps) {
         ArrayList<Square> validSquares = new ArrayList<>();
 
         int selfValue = (color == PieceColor.WHITE) ? 1 : 0;
@@ -53,7 +53,7 @@ public abstract class Piece {
         int yStart = square.getRow();
 
         for (int[] d : dir) {
-            for (int i = 1; i <= 7; i++) {
+            for (int i = 1; i <= maxSteps; i++) {
                 int x_new = xStart + i * d[0];
                 int y_new = yStart + i * d[1];
 

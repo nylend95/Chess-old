@@ -42,11 +42,13 @@ public class GameEngine implements Initializable, IControls {
         Bishop bishop = new Bishop(PieceColor.WHITE, new Square(4, 4));
         Bishop blackBishop1 = new Bishop(PieceColor.BLACK, new Square(2, 2));
         Bishop blackBishop2 = new Bishop(PieceColor.BLACK, new Square(2, 3));
+        Knight blackKnight1 = new Knight(PieceColor.BLACK, new Square(3,6));
         Queen queen = new Queen(PieceColor.WHITE, new Square(5, 5));
         white.add(queen);
         white.add(bishop);
         black.add(blackBishop1);
         black.add(blackBishop2);
+        black.add(blackKnight1);
 
         board = new Board(white, black);
 

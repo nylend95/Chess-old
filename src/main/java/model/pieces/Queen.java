@@ -17,7 +17,7 @@ public class Queen extends Piece {
     @Override
     public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {-1, 0}, {0, -1}, {0, 1}, {1, 0}};
-        return checkDirections(dir, bitmapPositions);
+        return checkDirections(dir, bitmapPositions, 7);
     }
 
     @Override
