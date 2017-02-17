@@ -91,7 +91,7 @@ public class GameEngine implements Initializable, IControls {
                 }
         );
 
-        initDraw(gc);
+        drawBoard(gc);
         draw(gc);
     }
 
@@ -103,14 +103,7 @@ public class GameEngine implements Initializable, IControls {
     }
 
 
-    private void initDraw(GraphicsContext gc) {
-        for (int c = 0; c < 9; c++) {
-            for (int r = 0; r < 9; r++) {
-                gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
-                gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
-            }
-        }
-
+    private void drawBoard(GraphicsContext gc) {
         for (int i = 0; i < 64; i++) {
             int c = (i % 8);
             int r = (i / 8) % 8;
@@ -122,41 +115,9 @@ public class GameEngine implements Initializable, IControls {
                 gc.setFill(Color.WHITE);
             }
             gc.fillRect(c * CELL_SIZE + 1, r * CELL_SIZE + 1, IMAGE_SIZE, IMAGE_SIZE);
+            gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
+            gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
         }
-
-//        //TODO: Optimalize this code.  --> Well I did! Look up. ;)
-//        for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
-//            if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
-//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-//                    if (r % (CELL_SIZE * 2) != 0) {
-//                        gc.setFill(Color.GREY);
-//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-//                    }
-//                }
-//            } else {
-//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-//                    if (r % (CELL_SIZE * 2) == 0) {
-//                        gc.setFill(Color.GREY);
-//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-//                    }
-//                }
-//            }
-//            if (c % (CELL_SIZE * 2) != 0) {
-//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-//                    if (r % (CELL_SIZE * 2) != 0) {
-//                        gc.setFill(Color.WHITE);
-//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-//                    }
-//                }
-//            } else {
-//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-//                    if (r % (CELL_SIZE * 2) == 0) {
-//                        gc.setFill(Color.WHITE);
-//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-//                    }
-//                }
-//            }
-//        }
     }
 
     public void doMove(Move move) {
@@ -229,7 +190,7 @@ public class GameEngine implements Initializable, IControls {
             startSquare = endSquare = null;
             capturedPiece = null;
         }
-        initDraw(gc);
+        drawBoard(gc);
         draw(gc);
 
         selectedPiece = null;
