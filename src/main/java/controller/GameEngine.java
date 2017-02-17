@@ -55,7 +55,7 @@ public class GameEngine implements Initializable, IControls {
                     if (selectedPiece == null) {
                         selectPieceToMove(event.getX(), event.getY(), gc);
                     } else {
-                        drawMove(event.getX(), event.getY());
+                        drawMove(event.getX(), event.getY(), selectedPiece, gc);
                     }
                 }
         );
@@ -83,6 +83,7 @@ public class GameEngine implements Initializable, IControls {
                 gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
             }
         }
+        //grey squares
         for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
             if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
                 for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
@@ -95,6 +96,24 @@ public class GameEngine implements Initializable, IControls {
                 for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
                     if (r % (CELL_SIZE * 2) == 0) {
                         gc.setFill(Color.GREY);
+                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
+                    }
+                }
+            }
+        }
+        //white squares
+        for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
+            if (c % (CELL_SIZE * 2) != 0) {
+                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+                    if (r % (CELL_SIZE * 2) != 0) {
+                        gc.setFill(Color.WHITE);
+                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
+                    }
+                }
+            } else {
+                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+                    if (r % (CELL_SIZE * 2) == 0) {
+                        gc.setFill(Color.WHITE);
                         gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
                     }
                 }
@@ -135,36 +154,37 @@ public class GameEngine implements Initializable, IControls {
         }
     }
 
-    private void selectPieceToMove(double x, double y, GraphicsContext gc) {
-        int row = (int) y / CELL_SIZE;
-        int column = (int) x / CELL_SIZE;
-        Square tmp = new Square(row, column);
-        if (whiteToMove) {
-            for (Piece piece : board.getWhitePieces()) {
-                if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()) {
-                    selectedPiece = piece;
-                    drawPossibleMoves(selectedPiece, gc);
-                }
-            }
-        } else {
-            for (Piece piece : board.getBlackPieces()) {
-                if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()) {
-                    selectedPiece = piece;
-                    drawPossibleMoves(selectedPiece, gc);
-                }
-            }
-        }
-    }
 
     //TODO: implement this method
-    private void drawMove(double x, double y) {
+    private void drawMove(double x, double y, Piece piece, GraphicsContext gc) {
+        Square square = selectSquare(x, y);
 
+        boolean legalClick = false;
+
+        PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
+        ArrayList<Square> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
+
+
+        for (Square box : possibleMoves) {
+            if (square.getRow() == box.getRow() && square.getColumn() == box.getColumn()) {
+                legalClick = true;
+            }
+        }
+        if (legalClick) {
+            //move piece
+            System.out.println("Generate move now!");
+        }
+        initDraw(gc);
+        draw(gc);
 
         selectedPiece = null;
     }
 
     //TODO: Fix so not drawing moves when selecting another piece
     private void drawPossibleMoves(Piece piece, GraphicsContext gc) {
+
+        if (piece == null) return;
+
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
 
         ArrayList<Square> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
@@ -179,5 +199,37 @@ public class GameEngine implements Initializable, IControls {
                 gc.drawImage(new Image("move_sprite.png"), (validSquare.getColumn() * CELL_SIZE) + PADDING, (validSquare.getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             }
         }
+    }
+
+    //Hjelpemetoder
+    private Piece getPieceOnSquare(Square square) {
+        Piece pieceOnSquare = null;
+        if (whiteToMove) {
+            for (Piece piece : board.getWhitePieces()) {
+                if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
+                    pieceOnSquare = piece;
+                }
+            }
+        } else {
+            for (Piece piece : board.getBlackPieces()) {
+                if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
+                    pieceOnSquare = piece;
+                }
+            }
+        }
+        return pieceOnSquare;
+    }
+
+    private void selectPieceToMove(double x, double y, GraphicsContext gc) {
+        selectedPiece = getPieceOnSquare(selectSquare(x, y));
+        drawPossibleMoves(selectedPiece, gc);
+    }
+
+    private Square selectSquare(double x, double y) {
+
+        int row = (int) y / CELL_SIZE;
+        int column = (int) x / CELL_SIZE;
+        return new Square(row, column);
+
     }
 }
