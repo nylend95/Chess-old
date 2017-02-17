@@ -60,15 +60,26 @@ public class Board {
 
     public boolean movePiece(Move move) {
         Piece pieceToBeMoved = move.getPiece();
-        ArrayList<Piece> selectedList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
-        for (Piece piece : selectedList) {
+        ArrayList<Piece> movedList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
+
+
+        for (Piece piece : movedList) {
             if (pieceToBeMoved.equals(piece)) {
                 piece.setSquare(move.getEndSquare());
                 piece.setMoved(true);
-                return true;
             }
         }
-        return false;
+        if (move.getCapturedPiece() != null) {
+            ArrayList<Piece> capturedList = (move.getCapturedPiece().getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
+            Piece capturedPiece = move.getCapturedPiece();
+            for (Piece piece : capturedList) {
+                if (capturedPiece.equals(piece)){
+                    capturedList.remove(piece);
+                }
+            }
+        }
+
+        return true;
     }
 
     public int[][] generateBitmapPositions() {

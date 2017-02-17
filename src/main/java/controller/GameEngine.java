@@ -26,6 +26,11 @@ public class GameEngine implements Initializable, IControls {
     private Player p2;
     private boolean whiteToMove = true;
     private Piece selectedPiece;
+    private Square startSquare;
+    private Square endSquare;
+    private Piece capturedPiece;
+
+
 
 
     @FXML
@@ -37,11 +42,13 @@ public class GameEngine implements Initializable, IControls {
         ArrayList<Piece> white = new ArrayList<>();
         ArrayList<Piece> black = new ArrayList<>();
         Bishop bishop = new Bishop(PieceColor.WHITE, new Square(4, 4));
-        Bishop bishop1 = new Bishop(PieceColor.BLACK, new Square(2, 2));
+        Bishop blackBishop1 = new Bishop(PieceColor.BLACK, new Square(2, 2));
+        Bishop blackBishop2 = new Bishop(PieceColor.BLACK, new Square(2,3));
         Queen queen = new Queen(PieceColor.WHITE, new Square(5, 5));
         white.add(queen);
         white.add(bishop);
-        black.add(bishop1);
+        black.add(blackBishop1);
+        black.add(blackBishop2);
 
         board = new Board(white, black);
 
@@ -157,7 +164,8 @@ public class GameEngine implements Initializable, IControls {
 
     //TODO: implement this method
     private void drawMove(double x, double y, Piece piece, GraphicsContext gc) {
-        Square square = selectSquare(x, y);
+        endSquare = selectSquare(x, y);
+        capturedPiece = getPieceOnSquare(endSquare);
 
         boolean legalClick = false;
 
@@ -166,13 +174,18 @@ public class GameEngine implements Initializable, IControls {
 
 
         for (Square box : possibleMoves) {
-            if (square.getRow() == box.getRow() && square.getColumn() == box.getColumn()) {
+            if (endSquare.getRow() == box.getRow() && endSquare.getColumn() == box.getColumn()) {
                 legalClick = true;
             }
         }
         if (legalClick) {
             //move piece
             System.out.println("Generate move now!");
+            //TOdO: capturedPiece kan være null
+            Move move = new Move(startSquare, endSquare, piece, capturedPiece);
+            doMove(move);
+            startSquare = endSquare = null;
+            capturedPiece = null;
         }
         initDraw(gc);
         draw(gc);
@@ -204,24 +217,22 @@ public class GameEngine implements Initializable, IControls {
     //Hjelpemetoder
     private Piece getPieceOnSquare(Square square) {
         Piece pieceOnSquare = null;
-        if (whiteToMove) {
             for (Piece piece : board.getWhitePieces()) {
                 if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
                     pieceOnSquare = piece;
                 }
             }
-        } else {
             for (Piece piece : board.getBlackPieces()) {
                 if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
                     pieceOnSquare = piece;
                 }
             }
-        }
         return pieceOnSquare;
     }
 
     private void selectPieceToMove(double x, double y, GraphicsContext gc) {
-        selectedPiece = getPieceOnSquare(selectSquare(x, y));
+        startSquare = selectSquare(x, y);
+        selectedPiece = getPieceOnSquare(startSquare);
         drawPossibleMoves(selectedPiece, gc);
     }
 
