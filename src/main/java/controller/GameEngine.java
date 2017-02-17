@@ -31,8 +31,6 @@ public class GameEngine implements Initializable, IControls {
     private Piece capturedPiece;
 
 
-
-
     @FXML
     Canvas cv;
 
@@ -43,7 +41,7 @@ public class GameEngine implements Initializable, IControls {
         ArrayList<Piece> black = new ArrayList<>();
         Bishop bishop = new Bishop(PieceColor.WHITE, new Square(4, 4));
         Bishop blackBishop1 = new Bishop(PieceColor.BLACK, new Square(2, 2));
-        Bishop blackBishop2 = new Bishop(PieceColor.BLACK, new Square(2,3));
+        Bishop blackBishop2 = new Bishop(PieceColor.BLACK, new Square(2, 3));
         Queen queen = new Queen(PieceColor.WHITE, new Square(5, 5));
         white.add(queen);
         white.add(bishop);
@@ -90,6 +88,8 @@ public class GameEngine implements Initializable, IControls {
                 gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
             }
         }
+
+        //TODO: Optimalize this code
         //grey squares
         for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
             if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
@@ -162,14 +162,13 @@ public class GameEngine implements Initializable, IControls {
     }
 
 
-    //TODO: implement this method
     private void drawMove(double x, double y, Piece piece, GraphicsContext gc) {
         endSquare = selectSquare(x, y);
-        capturedPiece = getPieceOnSquare(endSquare);
+        PieceColor opponentColor = whiteToMove ? PieceColor.BLACK : PieceColor.WHITE;
+        capturedPiece = getPieceOnSquare(endSquare, opponentColor);
 
         boolean legalClick = false;
 
-        PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
         ArrayList<Square> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
 
 
@@ -179,9 +178,6 @@ public class GameEngine implements Initializable, IControls {
             }
         }
         if (legalClick) {
-            //move piece
-            System.out.println("Generate move now!");
-            //TOdO: capturedPiece kan være null
             Move move = new Move(startSquare, endSquare, piece, capturedPiece);
             doMove(move);
             startSquare = endSquare = null;
@@ -193,7 +189,6 @@ public class GameEngine implements Initializable, IControls {
         selectedPiece = null;
     }
 
-    //TODO: Fix so not drawing moves when selecting another piece
     private void drawPossibleMoves(Piece piece, GraphicsContext gc) {
 
         if (piece == null) return;
@@ -215,29 +210,32 @@ public class GameEngine implements Initializable, IControls {
     }
 
     //Hjelpemetoder
-    private Piece getPieceOnSquare(Square square) {
+    private Piece getPieceOnSquare(Square square, PieceColor color) {
         Piece pieceOnSquare = null;
+        if (color.equals(PieceColor.WHITE)) {
             for (Piece piece : board.getWhitePieces()) {
                 if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
                     pieceOnSquare = piece;
                 }
             }
+        } else {
             for (Piece piece : board.getBlackPieces()) {
                 if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
                     pieceOnSquare = piece;
                 }
             }
+        }
         return pieceOnSquare;
     }
 
     private void selectPieceToMove(double x, double y, GraphicsContext gc) {
+        PieceColor color = whiteToMove ? PieceColor.WHITE : PieceColor.BLACK;
         startSquare = selectSquare(x, y);
-        selectedPiece = getPieceOnSquare(startSquare);
+        selectedPiece = getPieceOnSquare(startSquare, color);
         drawPossibleMoves(selectedPiece, gc);
     }
 
     private Square selectSquare(double x, double y) {
-
         int row = (int) y / CELL_SIZE;
         int column = (int) x / CELL_SIZE;
         return new Square(row, column);
