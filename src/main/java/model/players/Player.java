@@ -1,12 +1,15 @@
-package main.java.model;
+package main.java.model.players;
 
 import main.java.controller.IControls;
+import main.java.model.Move;
+import main.java.model.Square;
+import main.java.model.PieceColor;
 
 /**
  * Created by Jesper Nylend on 10.02.2017.
  * s305070
  */
-public abstract class Player {
+public abstract class Player implements IPlayer{
     private String name;
     private final PieceColor color;
     private final IControls controls;
@@ -29,7 +32,7 @@ public abstract class Player {
         return color;
     }
 
-    private void makeMove(Move move) {
+    protected void makeMove(Move move) {
         controls.doMove(move);
     }
 }

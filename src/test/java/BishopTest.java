@@ -1,6 +1,7 @@
 package test.java;
 
 import main.java.model.Board;
+import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 import main.java.model.pieces.Bishop;
@@ -25,22 +26,23 @@ public class BishopTest {
 
         Board board = new Board(white, new ArrayList<>());
 
-        ArrayList<Square> validMoves = new ArrayList<>();
-        validMoves.add(new Square(3, 3));
-        validMoves.add(new Square(2, 2));
-        validMoves.add(new Square(1, 1));
-        validMoves.add(new Square(0, 0));
-        validMoves.add(new Square(3, 5));
-        validMoves.add(new Square(2, 6));
-        validMoves.add(new Square(1, 7));
-        validMoves.add(new Square(5, 3));
-        validMoves.add(new Square(6, 2));
-        validMoves.add(new Square(7, 1));
-        validMoves.add(new Square(5, 5));
-        validMoves.add(new Square(6, 6));
-        validMoves.add(new Square(7, 7));
+        ArrayList<Square> endSquares = new ArrayList<>();
+        endSquares.add(new Square(3, 3));
+        endSquares.add(new Square(2, 2));
+        endSquares.add(new Square(1, 1));
+        endSquares.add(new Square(0, 0));
+        endSquares.add(new Square(3, 5));
+        endSquares.add(new Square(2, 6));
+        endSquares.add(new Square(1, 7));
+        endSquares.add(new Square(5, 3));
+        endSquares.add(new Square(6, 2));
+        endSquares.add(new Square(7, 1));
+        endSquares.add(new Square(5, 5));
+        endSquares.add(new Square(6, 6));
+        endSquares.add(new Square(7, 7));
 
-        ArrayList<Square> generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
+        ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(endSquares, bishop);
 
         testMoves(validMoves, generatedValidMoves);
 
@@ -53,19 +55,20 @@ public class BishopTest {
 
         board = new Board(white, black);
 
-        validMoves = new ArrayList<>();
-        validMoves.add(new Square(3, 3));
-        validMoves.add(new Square(3, 5));
-        validMoves.add(new Square(2, 6));
-        validMoves.add(new Square(1, 7));
-        validMoves.add(new Square(5, 3));
-        validMoves.add(new Square(6, 2));
-        validMoves.add(new Square(7, 1));
-        validMoves.add(new Square(5, 5));
-        validMoves.add(new Square(6, 6));
-        validMoves.add(new Square(7, 7));
+        endSquares= new ArrayList<>();
+        endSquares.add(new Square(3, 3));
+        endSquares.add(new Square(3, 5));
+        endSquares.add(new Square(2, 6));
+        endSquares.add(new Square(1, 7));
+        endSquares.add(new Square(5, 3));
+        endSquares.add(new Square(6, 2));
+        endSquares.add(new Square(7, 1));
+        endSquares.add(new Square(5, 5));
+        endSquares.add(new Square(6, 6));
+        endSquares.add(new Square(7, 7));
 
         generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
+        validMoves = Utils.convertEndSquaresToMoves(endSquares, bishop);
 
         testMoves(validMoves, generatedValidMoves);
 
@@ -79,16 +82,17 @@ public class BishopTest {
 
         board = new Board(white, black);
 
-        validMoves = new ArrayList<>();
-        validMoves.add(new Square(3, 3));
-        validMoves.add(new Square(3, 5));
-        validMoves.add(new Square(2, 6));
-        validMoves.add(new Square(1, 7));
-        validMoves.add(new Square(5, 5));
-        validMoves.add(new Square(6, 6));
-        validMoves.add(new Square(7, 7));
+        endSquares = new ArrayList<>();
+        endSquares.add(new Square(3, 3));
+        endSquares.add(new Square(3, 5));
+        endSquares.add(new Square(2, 6));
+        endSquares.add(new Square(1, 7));
+        endSquares.add(new Square(5, 5));
+        endSquares.add(new Square(6, 6));
+        endSquares.add(new Square(7, 7));
 
         generatedValidMoves = bishop.validMoves(board.generateBitmapPositions(), null);
+        validMoves = Utils.convertEndSquaresToMoves(endSquares, bishop);
 
         testMoves(validMoves, generatedValidMoves);
     }

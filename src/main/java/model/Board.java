@@ -74,7 +74,7 @@ public class Board {
             ArrayList<Piece> capturedList = (move.getCapturedPiece().getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
             Piece capturedPiece = move.getCapturedPiece();
             for (Piece piece : capturedList) {
-                if (capturedPiece.equals(piece)){
+                if (capturedPiece.equals(piece)) {
                     capturedList.remove(piece);
                     break;
                 }
@@ -82,6 +82,17 @@ public class Board {
         }
 
         return true;
+    }
+
+    public ArrayList<Move> generateValidMoves(PieceColor color) {
+        ArrayList<Piece> selectedPieceSet = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        ArrayList<Move> validMoves = new ArrayList<>();
+        int[][] bitmapPositions = generateBitmapPositions();
+        int[][] bitmapAttackingPositions = generateBitmapAttackingPositions(color);
+        for (Piece piece : selectedPieceSet) {
+            validMoves.addAll(piece.validMoves(bitmapPositions, bitmapAttackingPositions));
+        }
+        return validMoves;
     }
 
     public int[][] generateBitmapPositions() {

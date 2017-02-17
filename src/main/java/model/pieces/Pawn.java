@@ -1,6 +1,7 @@
 package main.java.model.pieces;
 
 
+import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
@@ -40,7 +41,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
+    public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         return null;
     }
 

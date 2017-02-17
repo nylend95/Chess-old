@@ -1,11 +1,13 @@
 package test.java;
 
 import main.java.model.Board;
+import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 import main.java.model.pieces.*;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static test.java.Utils.testMoves;
@@ -22,39 +24,40 @@ public class QueenTest {
 
         Board board = new Board(white, new ArrayList<>());
 
-        ArrayList<Square> validMoves = new ArrayList<>();
+        ArrayList<Square> validEndSquares = new ArrayList<>();
         // Diagonal lines
-        validMoves.add(new Square(3, 3));
-        validMoves.add(new Square(2, 2));
-        validMoves.add(new Square(1, 1));
-        validMoves.add(new Square(0, 0));
-        validMoves.add(new Square(3, 5));
-        validMoves.add(new Square(2, 6));
-        validMoves.add(new Square(1, 7));
-        validMoves.add(new Square(5, 3));
-        validMoves.add(new Square(6, 2));
-        validMoves.add(new Square(7, 1));
-        validMoves.add(new Square(5, 5));
-        validMoves.add(new Square(6, 6));
-        validMoves.add(new Square(7, 7));
+        validEndSquares.add(new Square(3, 3));
+        validEndSquares.add(new Square(2, 2));
+        validEndSquares.add(new Square(1, 1));
+        validEndSquares.add(new Square(0, 0));
+        validEndSquares.add(new Square(3, 5));
+        validEndSquares.add(new Square(2, 6));
+        validEndSquares.add(new Square(1, 7));
+        validEndSquares.add(new Square(5, 3));
+        validEndSquares.add(new Square(6, 2));
+        validEndSquares.add(new Square(7, 1));
+        validEndSquares.add(new Square(5, 5));
+        validEndSquares.add(new Square(6, 6));
+        validEndSquares.add(new Square(7, 7));
 
         // Straight lines
-        validMoves.add(new Square(0, 4));
-        validMoves.add(new Square(1, 4));
-        validMoves.add(new Square(2, 4));
-        validMoves.add(new Square(3, 4));
-        validMoves.add(new Square(5, 4));
-        validMoves.add(new Square(6, 4));
-        validMoves.add(new Square(7, 4));
-        validMoves.add(new Square(4, 0));
-        validMoves.add(new Square(4, 1));
-        validMoves.add(new Square(4, 2));
-        validMoves.add(new Square(4, 3));
-        validMoves.add(new Square(4, 5));
-        validMoves.add(new Square(4, 6));
-        validMoves.add(new Square(4, 7));
+        validEndSquares.add(new Square(0, 4));
+        validEndSquares.add(new Square(1, 4));
+        validEndSquares.add(new Square(2, 4));
+        validEndSquares.add(new Square(3, 4));
+        validEndSquares.add(new Square(5, 4));
+        validEndSquares.add(new Square(6, 4));
+        validEndSquares.add(new Square(7, 4));
+        validEndSquares.add(new Square(4, 0));
+        validEndSquares.add(new Square(4, 1));
+        validEndSquares.add(new Square(4, 2));
+        validEndSquares.add(new Square(4, 3));
+        validEndSquares.add(new Square(4, 5));
+        validEndSquares.add(new Square(4, 6));
+        validEndSquares.add(new Square(4, 7));
 
-        ArrayList<Square> generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
 
         testMoves(validMoves, generatedValidMoves);
 
@@ -68,32 +71,33 @@ public class QueenTest {
 
         board = new Board(white, black);
 
-        validMoves = new ArrayList<>();
-        validMoves.add(new Square(3, 3));
-        validMoves.add(new Square(3, 5));
-        validMoves.add(new Square(2, 6));
-        validMoves.add(new Square(1, 7));
-        validMoves.add(new Square(5, 3));
-        validMoves.add(new Square(6, 2));
-        validMoves.add(new Square(7, 1));
-        validMoves.add(new Square(5, 5));
-        validMoves.add(new Square(6, 6));
-        validMoves.add(new Square(7, 7));
+        validEndSquares = new ArrayList<>();
+        validEndSquares.add(new Square(3, 3));
+        validEndSquares.add(new Square(3, 5));
+        validEndSquares.add(new Square(2, 6));
+        validEndSquares.add(new Square(1, 7));
+        validEndSquares.add(new Square(5, 3));
+        validEndSquares.add(new Square(6, 2));
+        validEndSquares.add(new Square(7, 1));
+        validEndSquares.add(new Square(5, 5));
+        validEndSquares.add(new Square(6, 6));
+        validEndSquares.add(new Square(7, 7));
 
         // Straight lines
-        validMoves.add(new Square(0, 4));
-        validMoves.add(new Square(1, 4));
-        validMoves.add(new Square(2, 4));
-        validMoves.add(new Square(3, 4));
-        validMoves.add(new Square(5, 4));
-        validMoves.add(new Square(6, 4));
-        validMoves.add(new Square(7, 4));
-        validMoves.add(new Square(4, 3));
-        validMoves.add(new Square(4, 5));
-        validMoves.add(new Square(4, 6));
-        validMoves.add(new Square(4, 7));
+        validEndSquares.add(new Square(0, 4));
+        validEndSquares.add(new Square(1, 4));
+        validEndSquares.add(new Square(2, 4));
+        validEndSquares.add(new Square(3, 4));
+        validEndSquares.add(new Square(5, 4));
+        validEndSquares.add(new Square(6, 4));
+        validEndSquares.add(new Square(7, 4));
+        validEndSquares.add(new Square(4, 3));
+        validEndSquares.add(new Square(4, 5));
+        validEndSquares.add(new Square(4, 6));
+        validEndSquares.add(new Square(4, 7));
 
         generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
 
         testMoves(validMoves, generatedValidMoves);
 
@@ -107,32 +111,33 @@ public class QueenTest {
 
         board = new Board(white, black);
 
-        validMoves = new ArrayList<>();
-        validMoves.add(new Square(3, 3));
-        validMoves.add(new Square(3, 5));
-        validMoves.add(new Square(2, 6));
-        validMoves.add(new Square(1, 7));
-        validMoves.add(new Square(5, 5));
-        validMoves.add(new Square(6, 6));
-        validMoves.add(new Square(7, 7));
+        validEndSquares = new ArrayList<>();
+        validEndSquares.add(new Square(3, 3));
+        validEndSquares.add(new Square(3, 5));
+        validEndSquares.add(new Square(2, 6));
+        validEndSquares.add(new Square(1, 7));
+        validEndSquares.add(new Square(5, 5));
+        validEndSquares.add(new Square(6, 6));
+        validEndSquares.add(new Square(7, 7));
 
         // Straight lines
-        validMoves.add(new Square(0, 4));
-        validMoves.add(new Square(1, 4));
-        validMoves.add(new Square(2, 4));
-        validMoves.add(new Square(3, 4));
-        validMoves.add(new Square(5, 4));
-        validMoves.add(new Square(6, 4));
-        validMoves.add(new Square(7, 4));
-        validMoves.add(new Square(4, 0));
-        validMoves.add(new Square(4, 1));
-        validMoves.add(new Square(4, 2));
-        validMoves.add(new Square(4, 3));
-        validMoves.add(new Square(4, 5));
-        validMoves.add(new Square(4, 6));
-        validMoves.add(new Square(4, 7));
+        validEndSquares.add(new Square(0, 4));
+        validEndSquares.add(new Square(1, 4));
+        validEndSquares.add(new Square(2, 4));
+        validEndSquares.add(new Square(3, 4));
+        validEndSquares.add(new Square(5, 4));
+        validEndSquares.add(new Square(6, 4));
+        validEndSquares.add(new Square(7, 4));
+        validEndSquares.add(new Square(4, 0));
+        validEndSquares.add(new Square(4, 1));
+        validEndSquares.add(new Square(4, 2));
+        validEndSquares.add(new Square(4, 3));
+        validEndSquares.add(new Square(4, 5));
+        validEndSquares.add(new Square(4, 6));
+        validEndSquares.add(new Square(4, 7));
 
         generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
 
         testMoves(validMoves, generatedValidMoves);
     }

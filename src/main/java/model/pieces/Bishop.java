@@ -1,5 +1,6 @@
 package main.java.model.pieces;
 
+import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
@@ -19,7 +20,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackinPositions) {
+    public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
         return checkDirections(dir, bitmapPositions, 7);
     }

@@ -1,6 +1,7 @@
 package main.java.model.pieces;
 
 
+import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
@@ -11,9 +12,9 @@ import java.util.ArrayList;
  */
 public abstract class Piece {
 
-    final PieceColor color;
-    Square square;
-    boolean moved;
+    private final PieceColor color;
+    private Square square;
+    private boolean moved;
 
     public Piece(PieceColor color, Square square) {
         this.color = color;
@@ -45,10 +46,10 @@ public abstract class Piece {
         this.moved = moved;
     }
 
-    ArrayList<Square> checkDirections(int[][] dir, int[][] bitmapPositions, int maxSteps) {
-        ArrayList<Square> validSquares = new ArrayList<>();
+    ArrayList<Move> checkDirections(int[][] dir, int[][] bitmapPositions, int maxSteps) {
+        ArrayList<Move> validMoves = new ArrayList<>();
 
-        int selfValue = (color == PieceColor.WHITE) ? 1 : 0;
+        int selfValue = (color == PieceColor.WHITE) ? 1 : -1;
         int xStart = square.getColumn();
         int yStart = square.getRow();
 
@@ -65,19 +66,19 @@ public abstract class Piece {
                 // Capture or crash in own piece
                 if (bitmapPositions[y_new][x_new] != 0) {
                     if (bitmapPositions[y_new][x_new] != selfValue) {
-                        validSquares.add(new Square(y_new, x_new));
+                        validMoves.add(new Move(square, new Square(y_new, x_new), this, null));
                     }
                     break;
                 }
 
                 // Valid move
-                validSquares.add(new Square(y_new, x_new));
+                validMoves.add(new Move(square, new Square(y_new, x_new), this, null));
             }
         }
-        return validSquares;
+        return validMoves;
     }
 
-    public abstract ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions);
+    public abstract ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions);
 
     public abstract ArrayList<Square> attackSquares(int[][] bitmapPositions);
 

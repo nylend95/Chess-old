@@ -1,8 +1,11 @@
 package test.java;
 
+import main.java.model.Move;
 import main.java.model.Square;
+import main.java.model.pieces.Piece;
 import org.junit.Assert;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -10,20 +13,30 @@ import java.util.ArrayList;
  */
 class Utils {
 
-    static void testMoves(ArrayList<Square> validMoves, ArrayList<Square> generatedValidMoves){
-        for (Square gen_square : generatedValidMoves) {
+    static void testMoves(ArrayList<Move> validMoves, ArrayList<Move> generatedValidMoves) {
+        for (Move gen_move : generatedValidMoves) {
             boolean exists = false;
-            for (Square valid_square : validMoves) {
-                if (gen_square.getColumn() == valid_square.getColumn() && gen_square.getRow() == valid_square.getRow()) {
+            for (Move valid_move : validMoves) {
+                if (gen_move.getPiece().equals(valid_move.getPiece()) &&
+                        gen_move.getEndSquare().getColumn() == valid_move.getEndSquare().getColumn() &&
+                        gen_move.getEndSquare().getRow() == valid_move.getEndSquare().getRow()) {
                     exists = true;
                 }
             }
-            if(!exists){
-                System.out.println(gen_square);
+            if (!exists) {
+                System.out.println(gen_move);
             }
             Assert.assertTrue(exists);
         }
 
         Assert.assertEquals(validMoves.size(), generatedValidMoves.size());
+    }
+
+    static ArrayList<Move> convertEndSquaresToMoves(ArrayList<Square> endSquares, Piece piece){
+        ArrayList<Move> validMoves = new ArrayList<>();
+        for (Square endSquare : endSquares) {
+            validMoves.add(new Move(piece.getSquare(), endSquare, piece, null));
+        }
+        return validMoves;
     }
 }

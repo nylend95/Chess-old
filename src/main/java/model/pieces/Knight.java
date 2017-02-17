@@ -1,6 +1,7 @@
 package main.java.model.pieces;
 
 
+import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
@@ -15,15 +16,14 @@ public class Knight extends Piece {
     }
 
     @Override
-    public ArrayList<Square> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
+    public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         int[][] dir = {{1,2}, {1,-2}, {2,-1}, {2,1}, {-1,2}, {-1,-2}, {-2,1}, {-2,-1}};
         return checkDirections(dir, bitmapPositions, 1);
     }
 
     @Override
     public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
-        int[][] dir = {{1,2}, {1,-2}, {2,-1}, {2,1}, {-1,2}, {-1,-2}, {-2,1}, {-2,-1}};
-        return checkDirections(dir, bitmapPositions, 1);
+        return null;
     }
 
     @Override

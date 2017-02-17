@@ -8,6 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.java.model.*;
 import main.java.model.pieces.*;
+import main.java.model.players.HumanPlayer;
+import main.java.model.players.Player;
+import main.java.model.players.RandomAgent;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -75,7 +78,7 @@ public class GameEngine implements Initializable, IControls {
         board = new Board(white, black);
 
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
-        p2 = new HumanPlayer("Black", PieceColor.WHITE, this);
+        p2 = new RandomAgent("Black", PieceColor.BLACK, this);
 
         GraphicsContext gc = cv.getGraphicsContext2D();
 
@@ -94,7 +97,7 @@ public class GameEngine implements Initializable, IControls {
 
     private void reset() {
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
-        p2 = new HumanPlayer("Black", PieceColor.WHITE, this);
+        p2 = new HumanPlayer("Black", PieceColor.BLACK, this);
         board.resetBoard();
         whiteToMove = true;
     }
@@ -108,44 +111,72 @@ public class GameEngine implements Initializable, IControls {
             }
         }
 
-        //TODO: Optimalize this code
-        for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
-            if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
-                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-                    if (r % (CELL_SIZE * 2) != 0) {
-                        gc.setFill(Color.GREY);
-                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-                    }
-                }
-            } else {
-                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-                    if (r % (CELL_SIZE * 2) == 0) {
-                        gc.setFill(Color.GREY);
-                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-                    }
-                }
+        for (int i = 0; i < 64; i++) {
+            int c = (i % 8);
+            int r = (i / 8) % 8;
+            if (r % 2 == 0 && (i + 1) % 2 == 0) {
+                gc.setFill(Color.GREY);
+            }else if(r % 2 != 0 && i % 2 == 0){
+                gc.setFill(Color.GREY);
+            }else {
+                gc.setFill(Color.WHITE);
             }
-            if (c % (CELL_SIZE * 2) != 0) {
-                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-                    if (r % (CELL_SIZE * 2) != 0) {
-                        gc.setFill(Color.WHITE);
-                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-                    }
-                }
-            } else {
-                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
-                    if (r % (CELL_SIZE * 2) == 0) {
-                        gc.setFill(Color.WHITE);
-                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
-                    }
-                }
-            }
+            gc.fillRect(c * CELL_SIZE + 1, r * CELL_SIZE + 1, IMAGE_SIZE, IMAGE_SIZE);
         }
+
+//        //TODO: Optimalize this code.  --> Well I did! Look up. ;)
+//        for (int c = 0; c < CELL_SIZE * 9; c += CELL_SIZE) {
+//            if ((c - CELL_SIZE) % (CELL_SIZE * 2) != 0) {
+//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+//                    if (r % (CELL_SIZE * 2) != 0) {
+//                        gc.setFill(Color.GREY);
+//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
+//                    }
+//                }
+//            } else {
+//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+//                    if (r % (CELL_SIZE * 2) == 0) {
+//                        gc.setFill(Color.GREY);
+//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
+//                    }
+//                }
+//            }
+//            if (c % (CELL_SIZE * 2) != 0) {
+//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+//                    if (r % (CELL_SIZE * 2) != 0) {
+//                        gc.setFill(Color.WHITE);
+//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
+//                    }
+//                }
+//            } else {
+//                for (int r = 0; r < CELL_SIZE * 9; r += CELL_SIZE) {
+//                    if (r % (CELL_SIZE * 2) == 0) {
+//                        gc.setFill(Color.WHITE);
+//                        gc.fillRect(c + 1, r + 1, IMAGE_SIZE, IMAGE_SIZE);
+//                    }
+//                }
+//            }
+//        }
     }
 
     public void doMove(Move move) {
         board.movePiece(move);
+
+        // TODO check for win/remis
+
+        // Next player's turn
         whiteToMove = !whiteToMove;
+        Player playerToMove = getPlayersTurn();
+        if (!(playerToMove instanceof HumanPlayer)) {
+            playerToMove.selectMove(board.generateValidMoves(playerToMove.getColor()));
+        }
+    }
+
+    private Player getPlayersTurn() {
+        if (whiteToMove) {
+            return p1;
+        }
+        return p2;
     }
 
     private void draw(GraphicsContext gc) {
@@ -184,11 +215,11 @@ public class GameEngine implements Initializable, IControls {
 
         boolean legalClick = false;
 
-        ArrayList<Square> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
+        ArrayList<Move> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
 
 
-        for (Square box : possibleMoves) {
-            if (endSquare.getRow() == box.getRow() && endSquare.getColumn() == box.getColumn()) {
+        for (Move move : possibleMoves) {
+            if (endSquare.getRow() == move.getEndSquare().getRow() && endSquare.getColumn() == move.getEndSquare().getColumn()) {
                 legalClick = true;
             }
         }
@@ -210,16 +241,16 @@ public class GameEngine implements Initializable, IControls {
 
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
 
-        ArrayList<Square> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
+        ArrayList<Move> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
         int[][] bitmapPositions = board.generateBitmapPositions();
 
-        for (Square validSquare : possibleMoves) {
-            int vx = validSquare.getColumn();
-            int vy = validSquare.getRow();
+        for (Move validMove : possibleMoves) {
+            int vx = validMove.getEndSquare().getColumn();
+            int vy = validMove.getEndSquare().getRow();
             if (bitmapPositions[vy][vx] != 0) {
-                gc.drawImage(new Image("attack_sprite.png"), (validSquare.getColumn() * CELL_SIZE) + PADDING, (validSquare.getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+                gc.drawImage(new Image("attack_sprite.png"), (vx * CELL_SIZE) + PADDING, (vy * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             } else {
-                gc.drawImage(new Image("move_sprite.png"), (validSquare.getColumn() * CELL_SIZE) + PADDING, (validSquare.getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+                gc.drawImage(new Image("move_sprite.png"), (vx * CELL_SIZE) + PADDING, (vy * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             }
         }
     }
