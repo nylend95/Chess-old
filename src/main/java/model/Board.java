@@ -67,6 +67,7 @@ public class Board {
             if (pieceToBeMoved.equals(piece)) {
                 piece.setSquare(move.getEndSquare());
                 piece.setMoved(true);
+                break;
             }
         }
         if (move.getCapturedPiece() != null) {
@@ -75,6 +76,7 @@ public class Board {
             for (Piece piece : capturedList) {
                 if (capturedPiece.equals(piece)){
                     capturedList.remove(piece);
+                    break;
                 }
             }
         }
