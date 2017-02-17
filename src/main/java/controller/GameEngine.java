@@ -53,7 +53,6 @@ public class GameEngine implements Initializable, IControls {
         cv.setOnMouseClicked(event -> {
                     // TODO there is a bug here! Have to check what is inside the square instead. (try to click on bishop, and then on queen two times)
                     if (selectedPiece == null) {
-                        System.out.println("trykket");
                         selectPieceToMove(event.getX(), event.getY(), gc);
                     } else {
                         drawMove(event.getX(), event.getY());
@@ -140,14 +139,10 @@ public class GameEngine implements Initializable, IControls {
         int row = (int) y / CELL_SIZE;
         int column = (int) x / CELL_SIZE;
         Square tmp = new Square(row, column);
-        System.out.println(tmp);
         if (whiteToMove) {
-            System.out.println("White to move");
             for (Piece piece : board.getWhitePieces()) {
-                System.out.println(piece);
                 if (tmp.getRow() == piece.getSquare().getRow() && tmp.getColumn() == piece.getSquare().getColumn()) {
                     selectedPiece = piece;
-                    System.out.println(selectedPiece.toString());
                     drawPossibleMoves(selectedPiece, gc);
                 }
             }
@@ -168,7 +163,7 @@ public class GameEngine implements Initializable, IControls {
         selectedPiece = null;
     }
 
-    //TODO: Fix drawing on other pieces && new PNG
+    //TODO: Fix so not drawing moves when selecting another piece
     private void drawPossibleMoves(Piece piece, GraphicsContext gc) {
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
 

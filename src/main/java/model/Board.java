@@ -26,7 +26,6 @@ public class Board {
     }
 
     public void resetBoard() {
-
         whitePieces = new ArrayList<>(16);
         blackPieces = new ArrayList<>(16);
 
@@ -56,7 +55,7 @@ public class Board {
         blackPieces.add(new Queen(PieceColor.BLACK, new Square(0, 3)));
         blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
 
-        board = new Square[8][8]; //column | row
+        board = new Square[8][8];
     }
 
     public boolean movePiece(Move move) {
