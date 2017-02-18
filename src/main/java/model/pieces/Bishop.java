@@ -15,24 +15,20 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
-        return null;
-    }
-
-    @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
         return checkDirections(dir, bitmapPositions, 7);
     }
 
     @Override
-    public void captureFreeMoves() {
-
+    public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
+        int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
+        return checkAttackDirections(dir, bitmapPositions, 7);
     }
 
     @Override
-    public boolean toBeCaptured() {
-        return false;
+    public void captureFreeMoves() {
+
     }
 
     @Override

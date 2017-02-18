@@ -42,43 +42,42 @@ public class GameEngine implements Initializable, IControls {
 
         ArrayList<Piece> white = new ArrayList<>();
         ArrayList<Piece> black = new ArrayList<>();
-//        Bishop bishop = new Bishop(PieceColor.WHITE, new Square(7, 1));
-//        Bishop bishop1 = new Bishop(PieceColor.WHITE, new Square(7, 6));
-//        Knight knight = new Knight(PieceColor.WHITE, new Square(7, 5));
-//        Knight knight1 = new Knight(PieceColor.WHITE, new Square(7, 2));
+        Bishop bishop = new Bishop(PieceColor.WHITE, new Square(7, 1));
+        Bishop bishop1 = new Bishop(PieceColor.WHITE, new Square(7, 6));
+        Knight knight = new Knight(PieceColor.WHITE, new Square(7, 5));
+        Knight knight1 = new Knight(PieceColor.WHITE, new Square(7, 2));
         Rook rook = new Rook(PieceColor.WHITE, new Square(7, 0));
         Rook rook1 = new Rook(PieceColor.WHITE, new Square(7, 7));
-//        Queen queen = new Queen(PieceColor.WHITE, new Square(7, 3));
+        Queen queen = new Queen(PieceColor.WHITE, new Square(7, 3));
 
-//        white.add(bishop);
-//        white.add(bishop1);
-//        white.add(knight);
-//        white.add(knight1);
+        white.add(bishop);
+        white.add(bishop1);
+        white.add(knight);
+        white.add(knight1);
         white.add(rook);
         white.add(rook1);
-//        white.add(queen);
+        white.add(queen);
 
-//        Bishop blackbishop = new Bishop(PieceColor.BLACK, new Square(0, 1));
-//        Bishop blackbishop1 = new Bishop(PieceColor.BLACK, new Square(0, 6));
-//        Knight blackknight = new Knight(PieceColor.BLACK, new Square(0, 5));
-//        Knight blackknight1 = new Knight(PieceColor.BLACK, new Square(0, 2));
+        Bishop blackbishop = new Bishop(PieceColor.BLACK, new Square(0, 1));
+        Bishop blackbishop1 = new Bishop(PieceColor.BLACK, new Square(0, 6));
+        Knight blackknight = new Knight(PieceColor.BLACK, new Square(0, 5));
+        Knight blackknight1 = new Knight(PieceColor.BLACK, new Square(0, 2));
         Rook blackrook = new Rook(PieceColor.BLACK, new Square(0, 0));
         Rook blackrook1 = new Rook(PieceColor.BLACK, new Square(0, 7));
-//        Queen blackqueen = new Queen(PieceColor.BLACK, new Square(0, 3));
+        Queen blackqueen = new Queen(PieceColor.BLACK, new Square(0, 3));
 
-//        black.add(blackbishop);
-//        black.add(blackbishop1);
-//        black.add(blackknight);
-//        black.add(blackknight1);
+        black.add(blackbishop);
+        black.add(blackbishop1);
+        black.add(blackknight);
+        black.add(blackknight1);
         black.add(blackrook);
         black.add(blackrook1);
-//        black.add(blackqueen);
-
+        black.add(blackqueen);
 
 //        board = new Board(white, black);
             board = new Board();
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
-        p2 = new RandomAgent("Black", PieceColor.BLACK, this);
+        p2 = new HumanPlayer("Black", PieceColor.BLACK, this);
 
         gc = cv.getGraphicsContext2D();
 

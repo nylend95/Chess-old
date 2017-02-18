@@ -23,18 +23,14 @@ public class Queen extends Piece {
 
     @Override
     public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
-        return null;
+        int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+        return checkAttackDirections(dir, bitmapPositions, 7);
     }
 
 
     @Override
     public void captureFreeMoves() {
 
-    }
-
-    @Override
-    public boolean toBeCaptured() {
-        return false;
     }
 
     @Override

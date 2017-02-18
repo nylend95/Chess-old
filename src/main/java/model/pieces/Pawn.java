@@ -105,11 +105,6 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean toBeCaptured() {
-        return false;
-    }
-
-    @Override
     public String toString() {
         return "Pawn, " + super.toString();
     }

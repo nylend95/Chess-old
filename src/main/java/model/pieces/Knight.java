@@ -23,7 +23,8 @@ public class Knight extends Piece {
 
     @Override
     public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
-        return null;
+        int[][] dir = {{1,2}, {1,-2}, {2,-1}, {2,1}, {-1,2}, {-1,-2}, {-2,1}, {-2,-1}};
+        return checkAttackDirections(dir, bitmapPositions, 1);
     }
 
     @Override
@@ -31,10 +32,6 @@ public class Knight extends Piece {
 
     }
 
-    @Override
-    public boolean toBeCaptured() {
-        return false;
-    }
 
     @Override
     public String toString() {
