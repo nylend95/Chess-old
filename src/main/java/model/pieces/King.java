@@ -14,7 +14,7 @@ public class King extends Piece {
 
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

@@ -75,8 +75,8 @@ public class GameEngine implements Initializable, IControls {
 //        black.add(blackqueen);
 
 
-        board = new Board(white, black);
-
+//        board = new Board(white, black);
+            board = new Board();
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
         p2 = new RandomAgent("Black", PieceColor.BLACK, this);
 
@@ -127,7 +127,6 @@ public class GameEngine implements Initializable, IControls {
 
         // Next player's turn
         whiteToMove = !whiteToMove;
-        System.out.println(whiteToMove);
         Player playerToMove = getPlayersTurn();
         if (!(playerToMove instanceof HumanPlayer)) {
             ArrayList<Move> legalMoves = board.generateValidMoves(playerToMove.getColor());
@@ -189,8 +188,6 @@ public class GameEngine implements Initializable, IControls {
             Move move = new Move(startSquare, endSquare, piece);
             doMove(move);
             startSquare = endSquare = null;
-        }else{
-            System.out.println("NOT LEGAL MOVE");
         }
         drawBoard();
         draw();

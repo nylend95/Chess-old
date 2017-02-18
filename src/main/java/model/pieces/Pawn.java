@@ -43,10 +43,9 @@ public class Pawn extends Piece {
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
 
-//        if ()
 
 
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
