@@ -38,10 +38,10 @@ public class Board {
         }
         whitePieces.add(new Rook(PieceColor.WHITE, new Square(7, 0)));
         whitePieces.add(new Rook(PieceColor.WHITE, new Square(7, 7)));
-        whitePieces.add(new Bishop(PieceColor.WHITE, new Square(7, 1)));
-        whitePieces.add(new Bishop(PieceColor.WHITE, new Square(7, 6)));
-        whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 2)));
-        whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 5)));
+        whitePieces.add(new Bishop(PieceColor.WHITE, new Square(7, 2)));
+        whitePieces.add(new Bishop(PieceColor.WHITE, new Square(7, 5)));
+        whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 1)));
+        whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 6)));
         whitePieces.add(new Queen(PieceColor.WHITE, new Square(7, 3)));
         whitePieces.add(new King(PieceColor.WHITE, new Square(7, 4)));
 
@@ -51,10 +51,10 @@ public class Board {
         }
         blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 0)));
         blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 7)));
-        blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 1)));
-        blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 6)));
-        blackPieces.add(new Knight(PieceColor.BLACK, new Square(0, 2)));
-        blackPieces.add(new Knight(PieceColor.BLACK, new Square(0, 5)));
+        blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 2)));
+        blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 5)));
+        blackPieces.add(new Knight(PieceColor.BLACK, new Square(0, 1)));
+        blackPieces.add(new Knight(PieceColor.BLACK, new Square(0, 6)));
         blackPieces.add(new Queen(PieceColor.BLACK, new Square(0, 3)));
         blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
 
