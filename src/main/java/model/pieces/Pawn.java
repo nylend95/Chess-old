@@ -42,10 +42,56 @@ public class Pawn extends Piece {
 
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
+        ArrayList<Move> legalMoves = new ArrayList<>();
+        int[][] whiteDir = {{0, -1}};
+        int[][] blackDir = {{0, 1}};
+        int[][] whiteAtk = {{1, -1}, {-1, -1}};
+        int[][] blackAtk = {{1, 1}, {-1, 1}};
 
+        if(moveUp){
+            if (isMoved()){
+                legalMoves.addAll(attackMoves(whiteAtk, bitmapPositions));
+                legalMoves.addAll(checkDirections(whiteDir, bitmapPositions, 1));
+            }else {
+                legalMoves.addAll(attackMoves(whiteAtk, bitmapPositions));
+                legalMoves.addAll(checkDirections(whiteDir, bitmapPositions, 2));
+            }
+        } else {
+            if (isMoved()){
+                legalMoves.addAll(attackMoves(blackAtk, bitmapPositions));
+                legalMoves.addAll(checkDirections(blackDir, bitmapPositions, 1));
+            }else {
+                legalMoves.addAll(attackMoves(blackAtk, bitmapPositions));
+                legalMoves.addAll(checkDirections(blackDir, bitmapPositions, 2));
+            }
+        }
+        return legalMoves;
+    }
 
+    private ArrayList<Move> attackMoves(int[][] dir, int[][] bitmapPositions) {
+        ArrayList<Move> attackMoves = new ArrayList<>();
 
-        return new ArrayList<>();
+        int selfValue = (moveUp) ? 1 : -1;
+        int xStart = getSquare().getColumn();
+        int yStart = getSquare().getRow();
+
+        for (int[] d : dir) {
+            int x_new = xStart + d[0];
+            int y_new = yStart + d[1];
+
+            // Out of bounds
+            if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7) {
+                break;
+            }
+
+            // Capture or crash in own piece
+            if (bitmapPositions[y_new][x_new] != 0) {
+                if (bitmapPositions[y_new][x_new] != selfValue) {
+                    attackMoves.add(new Move(getSquare(), new Square(y_new, x_new), this));
+                }
+            }
+        }
+        return attackMoves;
     }
 
     @Override

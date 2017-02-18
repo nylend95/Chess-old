@@ -65,7 +65,7 @@ public abstract class Piece {
 
                 // Capture or crash in own piece
                 if (bitmapPositions[y_new][x_new] != 0) {
-                    if (bitmapPositions[y_new][x_new] != selfValue) {
+                    if (bitmapPositions[y_new][x_new] != selfValue && !(this instanceof Pawn)) {
                         validMoves.add(new Move(square, new Square(y_new, x_new), this));
                     }
                     break;
