@@ -17,7 +17,7 @@ public class Pawn extends Piece {
 
     public Pawn(PieceColor color, Square square, boolean moveUp) {
         super(color, square);
-        this.moveUp = moveUp;
+        this.moveUp = (color == PieceColor.WHITE);
     }
 
     public boolean isPromoted() {
@@ -42,6 +42,10 @@ public class Pawn extends Piece {
 
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
+
+//        if ()
+
+
         return null;
     }
 
