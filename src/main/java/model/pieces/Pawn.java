@@ -43,30 +43,51 @@ public class Pawn extends Piece {
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         ArrayList<Move> legalMoves = new ArrayList<>();
+        if (!promoted) {
+            legalMoves = normalMoves(bitmapPositions);
+            if (moveUp) {
+                if (getSquare().getRow() <= 6) {
+                    promoted = true;
+                }
+            } else {
+                if (getSquare().getRow() >= 1) {
+                    promoted = true;
+                    setPromotedTo(new Queen(PieceColor.BLACK, new Square(getSquare().getRow(), getSquare().getColumn())));
+                }
+            }
+        } else {
+            return promotedTo.validMoves(bitmapPositions, bitmapAttackingPositions);
+        }
+        return legalMoves;
+    }
+
+    private ArrayList<Move> normalMoves(int[][] bitmapPositions) { //true = white
+        ArrayList<Move> legalMoves = new ArrayList<>();
         int[][] whiteDir = {{0, -1}};
         int[][] blackDir = {{0, 1}};
         int[][] whiteAtk = {{1, -1}, {-1, -1}};
         int[][] blackAtk = {{1, 1}, {-1, 1}};
 
-        if(moveUp){
-            if (isMoved()){
+        if (moveUp) {
+            if (isMoved()) {
                 legalMoves.addAll(attackMoves(whiteAtk, bitmapPositions));
                 legalMoves.addAll(checkDirections(whiteDir, bitmapPositions, 1));
-            }else {
+            } else {
                 legalMoves.addAll(attackMoves(whiteAtk, bitmapPositions));
                 legalMoves.addAll(checkDirections(whiteDir, bitmapPositions, 2));
             }
         } else {
-            if (isMoved()){
+            if (isMoved()) {
                 legalMoves.addAll(attackMoves(blackAtk, bitmapPositions));
                 legalMoves.addAll(checkDirections(blackDir, bitmapPositions, 1));
-            }else {
+            } else {
                 legalMoves.addAll(attackMoves(blackAtk, bitmapPositions));
                 legalMoves.addAll(checkDirections(blackDir, bitmapPositions, 2));
             }
         }
         return legalMoves;
     }
+
 
     private ArrayList<Move> attackMoves(int[][] dir, int[][] bitmapPositions) {
         ArrayList<Move> attackMoves = new ArrayList<>();
