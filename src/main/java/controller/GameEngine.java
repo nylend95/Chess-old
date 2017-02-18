@@ -177,7 +177,7 @@ public class GameEngine implements Initializable, IControls {
 
         boolean legalClick = false;
 
-        ArrayList<Move> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
+        ArrayList<Move> possibleMoves = piece.validMoves(board.getBitmapPositions(), board.getBitmapAttackingPositions(opponentColor));
 
 
         for (Move move : possibleMoves) {
@@ -204,8 +204,8 @@ public class GameEngine implements Initializable, IControls {
 
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
 
-        ArrayList<Move> possibleMoves = piece.validMoves(board.generateBitmapPositions(), board.generateBitmapAttackingPositions(opponentColor));
-        int[][] bitmapPositions = board.generateBitmapPositions();
+        int[][] bitmapPositions = board.getBitmapPositions();
+        ArrayList<Move> possibleMoves = piece.validMoves(bitmapPositions, board.getBitmapAttackingPositions(opponentColor));
 
         for (Move validMove : possibleMoves) {
             int vx = validMove.getEndSquare().getColumn();

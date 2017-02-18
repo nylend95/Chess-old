@@ -7,7 +7,6 @@ import main.java.model.Square;
 import main.java.model.pieces.*;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static test.java.Utils.testMoves;
@@ -56,7 +55,7 @@ public class QueenTest {
         validEndSquares.add(new Square(4, 6));
         validEndSquares.add(new Square(4, 7));
 
-        ArrayList<Move> generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = queen.validMoves(board.getBitmapPositions(), null);
         ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
 
         testMoves(validMoves, generatedValidMoves);
@@ -96,7 +95,7 @@ public class QueenTest {
         validEndSquares.add(new Square(4, 6));
         validEndSquares.add(new Square(4, 7));
 
-        generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        generatedValidMoves = queen.validMoves(board.getBitmapPositions(), null);
         validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
 
         testMoves(validMoves, generatedValidMoves);
@@ -136,7 +135,7 @@ public class QueenTest {
         validEndSquares.add(new Square(4, 6));
         validEndSquares.add(new Square(4, 7));
 
-        generatedValidMoves = queen.validMoves(board.generateBitmapPositions(), null);
+        generatedValidMoves = queen.validMoves(board.getBitmapPositions(), null);
         validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
 
         testMoves(validMoves, generatedValidMoves);

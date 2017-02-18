@@ -13,6 +13,9 @@ public class Board {
     private Square[][] board;
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
+    private int[][] bitmapPositions;
+    private int[][] bitmapAttackingPositionsWhite;
+    private int[][] bitmapAttackingPositionsBlack;
 
     public Board() {
         resetBoard();
@@ -22,7 +25,7 @@ public class Board {
         this.whitePieces = whitePieces;
         this.blackPieces = blackPieces;
 
-        board = new Square[8][8];
+        init();
     }
 
     public void resetBoard() {
@@ -55,7 +58,13 @@ public class Board {
         blackPieces.add(new Queen(PieceColor.BLACK, new Square(0, 3)));
         blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
 
+        init();
+    }
+
+    private void init() {
         board = new Square[8][8];
+        updateBitmapPositions();
+        updateBitmapAttackingPositions();
     }
 
     public boolean movePiece(Move move) {
@@ -79,63 +88,67 @@ public class Board {
             }
         }
 
+        updateBitmapPositions();
+        updateBitmapAttackingPositions();
+
         return true;
-}
+    }
 
     public ArrayList<Move> generateValidMoves(PieceColor color) {
         ArrayList<Piece> selectedPieceSet = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
         ArrayList<Move> validMoves = new ArrayList<>();
-        int[][] bitmapPositions = generateBitmapPositions();
-        int[][] bitmapAttackingPositions = generateBitmapAttackingPositions(color);
         for (Piece piece : selectedPieceSet) {
-            validMoves.addAll(piece.validMoves(bitmapPositions, bitmapAttackingPositions));
+            validMoves.addAll(piece.validMoves(bitmapPositions, getBitmapAttackingPositions(color)));
         }
         return validMoves;
     }
 
-    public int[][] generateBitmapPositions() {
+    private void updateBitmapPositions() {
         //-1 for black pieces
         //+1 for white pieces
-        int[][] bitmap = new int[8][8];
+        bitmapPositions = new int[8][8];
 
         for (Piece black : blackPieces) {
-            bitmap[black.getSquare().getRow()][black.getSquare().getColumn()] = -1;
+            bitmapPositions[black.getSquare().getRow()][black.getSquare().getColumn()] = -1;
         }
 
         for (Piece white : whitePieces) {
-            bitmap[white.getSquare().getRow()][white.getSquare().getColumn()] = 1;
+            bitmapPositions[white.getSquare().getRow()][white.getSquare().getColumn()] = 1;
         }
-
-        return bitmap;
     }
 
-    public int[][] generateBitmapAttackingPositions(PieceColor pieceColor) {
+    public int[][] getBitmapPositions() {
+        return bitmapPositions;
+    }
+
+    private void updateBitmapAttackingPositions() {
         //1 for attacking position
-        int[][] bitmapPositions = generateBitmapPositions();
+        bitmapAttackingPositionsWhite = new int[8][8];
+        bitmapAttackingPositionsBlack = new int[8][8];
 
-        int[][] bitmap = new int[8][8];
-
-        if (pieceColor == PieceColor.BLACK) {
-            for (Piece piece : blackPieces) {
-                ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
-                if (attackingPositions != null) {
-                    for (Square attackingSquare : attackingPositions) {
-                        bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
-                    }
-                }
-            }
-        } else {
-            for (Piece piece : whitePieces) {
-                ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
-                if (attackingPositions != null) {
-                    for (Square attackingSquare : attackingPositions) {
-                        bitmap[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
-                    }
+        for (Piece piece : blackPieces) {
+            ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
+            if (attackingPositions != null) {
+                for (Square attackingSquare : attackingPositions) {
+                    bitmapAttackingPositionsBlack[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
                 }
             }
         }
+        for (Piece piece : whitePieces) {
+            ArrayList<Square> attackingPositions = piece.attackSquares(bitmapPositions);
+            if (attackingPositions != null) {
+                for (Square attackingSquare : attackingPositions) {
+                    bitmapAttackingPositionsWhite[attackingSquare.getRow()][attackingSquare.getColumn()] = 1;
+                }
+            }
+        }
+    }
 
-        return bitmap;
+    public int[][] getBitmapAttackingPositions(PieceColor color) {
+        if (color == PieceColor.BLACK) {
+            return bitmapAttackingPositionsBlack;
+        }
+        return bitmapAttackingPositionsWhite;
     }
 
     public Square[][] getBoard() {
