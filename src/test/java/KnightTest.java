@@ -38,7 +38,7 @@ public class KnightTest {
         endSquares.add(new Square(2,5));
         endSquares.add(new Square(2,3));
 
-        ArrayList<Move> generatedValidMoves = knight.validMoves(board.generateBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = knight.validMoves(board.getBitmapPositions(), null);
         ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
 
         testMoves(validMoves, generatedValidMoves);
@@ -60,7 +60,7 @@ public class KnightTest {
 
         board = new Board(white, black);
 
-        generatedValidMoves = knight.validMoves(board.generateBitmapPositions(), null);
+        generatedValidMoves = knight.validMoves(board.getBitmapPositions(), null);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
 
         testMoves(validMoves, generatedValidMoves);
@@ -81,7 +81,7 @@ public class KnightTest {
 
         board = new Board(white, black);
 
-        generatedValidMoves = knight.validMoves(board.generateBitmapPositions(), null);
+        generatedValidMoves = knight.validMoves(board.getBitmapPositions(), null);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
 
         testMoves(validMoves, generatedValidMoves);
@@ -105,7 +105,7 @@ public class KnightTest {
 
         board = new Board(white, new ArrayList<>());
 
-        generatedValidMoves = knightStart.validMoves(board.generateBitmapPositions(), null);
+        generatedValidMoves = knightStart.validMoves(board.getBitmapPositions(), null);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, knightStart);
 
         testMoves(validMoves, generatedValidMoves);
