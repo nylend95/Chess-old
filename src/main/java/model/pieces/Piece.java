@@ -66,13 +66,13 @@ public abstract class Piece {
                 // Capture or crash in own piece
                 if (bitmapPositions[y_new][x_new] != 0) {
                     if (bitmapPositions[y_new][x_new] != selfValue) {
-                        validMoves.add(new Move(square, new Square(y_new, x_new), this, null));
+                        validMoves.add(new Move(square, new Square(y_new, x_new), this));
                     }
                     break;
                 }
 
                 // Valid move
-                validMoves.add(new Move(square, new Square(y_new, x_new), this, null));
+                validMoves.add(new Move(square, new Square(y_new, x_new), this));
             }
         }
         return validMoves;

@@ -22,6 +22,17 @@ public class Square {
     }
 
     @Override
+    public boolean equals(Object obj){
+        if (!(obj instanceof Square))
+            return false;
+        if (obj == this)
+            return true;
+
+        Square rhs = (Square) obj;
+        return rhs.getColumn() == getColumn() && rhs.getRow() == getRow();
+    }
+
+    @Override
     public String toString(){
         return "[" + getRow() + ", " + getColumn() + "] | ";
     }

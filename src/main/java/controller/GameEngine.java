@@ -31,48 +31,48 @@ public class GameEngine implements Initializable, IControls {
     private Piece selectedPiece;
     private Square startSquare;
     private Square endSquare;
-    private Piece capturedPiece;
 
 
     @FXML
     Canvas cv;
+    private GraphicsContext gc;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         ArrayList<Piece> white = new ArrayList<>();
         ArrayList<Piece> black = new ArrayList<>();
-        Bishop bishop = new Bishop(PieceColor.WHITE, new Square(7, 1));
-        Bishop bishop1 = new Bishop(PieceColor.WHITE, new Square(7, 6));
-        Knight knight = new Knight(PieceColor.WHITE, new Square(7, 5));
-        Knight knight1 = new Knight(PieceColor.WHITE, new Square(7, 2));
+//        Bishop bishop = new Bishop(PieceColor.WHITE, new Square(7, 1));
+//        Bishop bishop1 = new Bishop(PieceColor.WHITE, new Square(7, 6));
+//        Knight knight = new Knight(PieceColor.WHITE, new Square(7, 5));
+//        Knight knight1 = new Knight(PieceColor.WHITE, new Square(7, 2));
         Rook rook = new Rook(PieceColor.WHITE, new Square(7, 0));
         Rook rook1 = new Rook(PieceColor.WHITE, new Square(7, 7));
-        Queen queen = new Queen(PieceColor.WHITE, new Square(7, 3));
+//        Queen queen = new Queen(PieceColor.WHITE, new Square(7, 3));
 
-        white.add(bishop);
-        white.add(bishop1);
-        white.add(knight);
-        white.add(knight1);
+//        white.add(bishop);
+//        white.add(bishop1);
+//        white.add(knight);
+//        white.add(knight1);
         white.add(rook);
         white.add(rook1);
-        white.add(queen);
+//        white.add(queen);
 
-        Bishop blackbishop = new Bishop(PieceColor.BLACK, new Square(0, 1));
-        Bishop blackbishop1 = new Bishop(PieceColor.BLACK, new Square(0, 6));
-        Knight blackknight = new Knight(PieceColor.BLACK, new Square(0, 5));
-        Knight blackknight1 = new Knight(PieceColor.BLACK, new Square(0, 2));
+//        Bishop blackbishop = new Bishop(PieceColor.BLACK, new Square(0, 1));
+//        Bishop blackbishop1 = new Bishop(PieceColor.BLACK, new Square(0, 6));
+//        Knight blackknight = new Knight(PieceColor.BLACK, new Square(0, 5));
+//        Knight blackknight1 = new Knight(PieceColor.BLACK, new Square(0, 2));
         Rook blackrook = new Rook(PieceColor.BLACK, new Square(0, 0));
         Rook blackrook1 = new Rook(PieceColor.BLACK, new Square(0, 7));
-        Queen blackqueen = new Queen(PieceColor.BLACK, new Square(0, 3));
+//        Queen blackqueen = new Queen(PieceColor.BLACK, new Square(0, 3));
 
-        black.add(blackbishop);
-        black.add(blackbishop1);
-        black.add(blackknight);
-        black.add(blackknight1);
+//        black.add(blackbishop);
+//        black.add(blackbishop1);
+//        black.add(blackknight);
+//        black.add(blackknight1);
         black.add(blackrook);
         black.add(blackrook1);
-        black.add(blackqueen);
+//        black.add(blackqueen);
 
 
         board = new Board(white, black);
@@ -80,19 +80,19 @@ public class GameEngine implements Initializable, IControls {
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
         p2 = new RandomAgent("Black", PieceColor.BLACK, this);
 
-        GraphicsContext gc = cv.getGraphicsContext2D();
+        gc = cv.getGraphicsContext2D();
 
         cv.setOnMouseClicked(event -> {
                     if (selectedPiece == null) {
-                        selectPieceToMove(event.getX(), event.getY(), gc);
+                        selectPieceToMove(event.getX(), event.getY());
                     } else {
-                        drawMove(event.getX(), event.getY(), selectedPiece, gc);
+                        drawMove(event.getX(), event.getY(), selectedPiece);
                     }
                 }
         );
 
-        drawBoard(gc);
-        draw(gc);
+        drawBoard();
+        draw();
     }
 
     private void reset() {
@@ -103,7 +103,7 @@ public class GameEngine implements Initializable, IControls {
     }
 
 
-    private void drawBoard(GraphicsContext gc) {
+    private void drawBoard() {
         for (int i = 0; i < 64; i++) {
             int c = (i % 8);
             int r = (i / 8) % 8;
@@ -127,9 +127,11 @@ public class GameEngine implements Initializable, IControls {
 
         // Next player's turn
         whiteToMove = !whiteToMove;
+        System.out.println(whiteToMove);
         Player playerToMove = getPlayersTurn();
         if (!(playerToMove instanceof HumanPlayer)) {
-            playerToMove.selectMove(board.generateValidMoves(playerToMove.getColor()));
+            ArrayList<Move> legalMoves = board.generateValidMoves(playerToMove.getColor());
+            playerToMove.selectMove(legalMoves);
         }
     }
 
@@ -140,19 +142,19 @@ public class GameEngine implements Initializable, IControls {
         return p2;
     }
 
-    private void draw(GraphicsContext gc) {
+    private void draw() {
         ArrayList<Piece> whitePieces = board.getWhitePieces();
         ArrayList<Piece> blackPieces = board.getBlackPieces();
 
         for (Piece piece : whitePieces) {
-            drawPiece(piece, gc);
+            drawPiece(piece);
         }
         for (Piece piece : blackPieces) {
-            drawPiece(piece, gc);
+            drawPiece(piece);
         }
     }
 
-    private void drawPiece(Piece piece, GraphicsContext gc) {
+    private void drawPiece(Piece piece) {
         if (piece instanceof Pawn) {
             gc.drawImage(new Image("pieces/" + piece.getColorString() + "_pawn.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
         } else if (piece instanceof Bishop) {
@@ -169,10 +171,9 @@ public class GameEngine implements Initializable, IControls {
     }
 
 
-    private void drawMove(double x, double y, Piece piece, GraphicsContext gc) {
+    private void drawMove(double x, double y, Piece piece) {
         endSquare = selectSquare(x, y);
         PieceColor opponentColor = whiteToMove ? PieceColor.BLACK : PieceColor.WHITE;
-        capturedPiece = getPieceOnSquare(endSquare, opponentColor);
 
         boolean legalClick = false;
 
@@ -180,18 +181,19 @@ public class GameEngine implements Initializable, IControls {
 
 
         for (Move move : possibleMoves) {
-            if (endSquare.getRow() == move.getEndSquare().getRow() && endSquare.getColumn() == move.getEndSquare().getColumn()) {
+            if (endSquare.equals(move.getEndSquare())) {
                 legalClick = true;
             }
         }
         if (legalClick) {
-            Move move = new Move(startSquare, endSquare, piece, capturedPiece);
+            Move move = new Move(startSquare, endSquare, piece);
             doMove(move);
             startSquare = endSquare = null;
-            capturedPiece = null;
+        }else{
+            System.out.println("NOT LEGAL MOVE");
         }
-        drawBoard(gc);
-        draw(gc);
+        drawBoard();
+        draw();
 
         selectedPiece = null;
     }
@@ -235,7 +237,7 @@ public class GameEngine implements Initializable, IControls {
         return pieceOnSquare;
     }
 
-    private void selectPieceToMove(double x, double y, GraphicsContext gc) {
+    private void selectPieceToMove(double x, double y) {
         PieceColor color = whiteToMove ? PieceColor.WHITE : PieceColor.BLACK;
         startSquare = selectSquare(x, y);
         selectedPiece = getPieceOnSquare(startSquare, color);

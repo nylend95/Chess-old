@@ -61,6 +61,7 @@ public class Board {
     public boolean movePiece(Move move) {
         Piece pieceToBeMoved = move.getPiece();
         ArrayList<Piece> movedList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
+        ArrayList<Piece> captureList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? blackPieces : whitePieces;
 
 
         for (Piece piece : movedList) {
@@ -70,19 +71,16 @@ public class Board {
                 break;
             }
         }
-        if (move.getCapturedPiece() != null) {
-            ArrayList<Piece> capturedList = (move.getCapturedPiece().getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
-            Piece capturedPiece = move.getCapturedPiece();
-            for (Piece piece : capturedList) {
-                if (capturedPiece.equals(piece)) {
-                    capturedList.remove(piece);
-                    break;
-                }
+
+        for (Piece piece : captureList) {
+            if (piece.getSquare().equals(move.getEndSquare())) {
+                captureList.remove(piece);
+                break;
             }
         }
 
         return true;
-    }
+}
 
     public ArrayList<Move> generateValidMoves(PieceColor color) {
         ArrayList<Piece> selectedPieceSet = (color == PieceColor.WHITE) ? whitePieces : blackPieces;

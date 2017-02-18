@@ -5,7 +5,6 @@ import main.java.model.Square;
 import main.java.model.pieces.Piece;
 import org.junit.Assert;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +34,7 @@ class Utils {
     static ArrayList<Move> convertEndSquaresToMoves(ArrayList<Square> endSquares, Piece piece){
         ArrayList<Move> validMoves = new ArrayList<>();
         for (Square endSquare : endSquares) {
-            validMoves.add(new Move(piece.getSquare(), endSquare, piece, null));
+            validMoves.add(new Move(piece.getSquare(), endSquare, piece));
         }
         return validMoves;
     }
