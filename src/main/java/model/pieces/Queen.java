@@ -27,6 +27,12 @@ public class Queen extends Piece {
         return checkAttackDirections(dir, bitmapPositions, 7);
     }
 
+    @Override
+    public ArrayList<Square> attackSquaresPenetrate(int[][] bitmapPositions) {
+        int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+        return checkAttackDirectionsPenetrate(dir, bitmapPositions, 7);
+    }
+
 
     @Override
     public void captureFreeMoves() {

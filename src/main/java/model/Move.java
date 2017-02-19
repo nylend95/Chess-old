@@ -9,6 +9,7 @@ public class Move {
     private final Square startSquare;
     private final Square endSquare;
     private final Piece piece;
+    private Piece capturedPiece;
 
     public Move(Square startSquare, Square endSquare, Piece piece) {
         this.startSquare = startSquare;
@@ -26,5 +27,13 @@ public class Move {
 
     public Piece getPiece() {
         return piece;
+    }
+
+    public Piece getCapturedPiece() {
+        return capturedPiece;
+    }
+
+    public void setCapturedPiece(Piece capturedPiece) {
+        this.capturedPiece = capturedPiece;
     }
 }

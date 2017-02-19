@@ -42,6 +42,7 @@ public class Pawn extends Piece {
 
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
+        // TODO finish promoted, and clean code.
         ArrayList<Move> legalMoves = new ArrayList<>();
         if (!promoted) {
             legalMoves = normalMoves(bitmapPositions);
@@ -117,7 +118,40 @@ public class Pawn extends Piece {
 
     @Override
     public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
-        return null;
+        ArrayList<Square> attackSquares = new ArrayList<>();
+        int[][] atkDir;
+        if (moveUp) {
+            atkDir = new int[][]{{1, -1}, {-1, -1}};
+        } else {
+            atkDir = new int[][]{{1, 1}, {-1, 1}};
+        }
+
+        int selfValue = (moveUp) ? 1 : -1;
+        int xStart = getSquare().getColumn();
+        int yStart = getSquare().getRow();
+
+        for (int[] d : atkDir) {
+            int x_new = xStart + d[0];
+            int y_new = yStart + d[1];
+
+            // Out of bounds
+            if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7) {
+                break;
+            }
+
+            // Capture or crash in own piece
+            if (bitmapPositions[y_new][x_new] != 0) {
+                if (bitmapPositions[y_new][x_new] != selfValue) {
+                    attackSquares.add(new Square(y_new, x_new));
+                }
+            }
+        }
+        return attackSquares;
+    }
+
+    @Override
+    public ArrayList<Square> attackSquaresPenetrate(int[][] bitmapPositions) {
+        return attackSquares(bitmapPositions);
     }
 
     @Override

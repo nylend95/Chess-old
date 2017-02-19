@@ -5,6 +5,7 @@ import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
+import javax.xml.parsers.FactoryConfigurationError;
 import java.util.ArrayList;
 
 /**
@@ -97,6 +98,7 @@ public abstract class Piece {
                 // Pretend to capture own piece or capture opponent piece
                 if (bitmapPositions[y_new][x_new] != 0) {
                     attacks.add(new Square(y_new, x_new));
+
                     break;
                 }
 
@@ -107,11 +109,53 @@ public abstract class Piece {
         return attacks;
     }
 
+    ArrayList<Square> checkAttackDirectionsPenetrate(int[][] dir, int[][] bitmapPositions, int maxSteps) {
+        ArrayList<Square> attacks = new ArrayList<>();
+
+        int opponentValue = (color == PieceColor.BLACK) ? 1 : -1;
+        int opponentValueKing = (color == PieceColor.BLACK) ? 2 : -2;
+        int xStart = square.getColumn();
+        int yStart = square.getRow();
+
+        for (int[] d : dir) {
+            boolean penetrated = false;
+            for (int i = 1; i <= maxSteps; i++) {
+                int x_new = xStart + i * d[0];
+                int y_new = yStart + i * d[1];
+
+                // Out of bounds
+                if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7) {
+                    break;
+                }
+
+                // Pretend to capture own piece or capture opponent piece
+                if (bitmapPositions[y_new][x_new] != 0) {
+                    // Possible attack square
+                    attacks.add(new Square(y_new, x_new));
+
+                    if (bitmapPositions[y_new][x_new] != opponentValueKing && penetrated) {
+                        break;
+                    }
+
+                    if (bitmapPositions[y_new][x_new] == opponentValue){
+                        penetrated = true;
+                    }
+                }
+
+                // Valid attack square
+                attacks.add(new Square(y_new, x_new));
+            }
+        }
+        return attacks;
+    }
+
     public abstract ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions);
 
     public abstract ArrayList<Square> attackSquares(int[][] bitmapPositions);
 
-    public abstract void captureFreeMoves();
+    public abstract ArrayList<Square> attackSquaresPenetrate(int[][] bitmapPositions); // TODO remove this
+
+    public abstract void captureFreeMoves(); // TODO do we need this?
 
     public boolean toBeCaptured(int[][] bitmapAttackingPositions) {
         return (bitmapAttackingPositions[getSquare().getRow()][getSquare().getColumn()] == 1);

@@ -10,7 +10,6 @@ import main.java.model.*;
 import main.java.model.pieces.*;
 import main.java.model.players.HumanPlayer;
 import main.java.model.players.Player;
-import main.java.model.players.RandomAgent;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,48 +38,11 @@ public class GameEngine implements Initializable, IControls {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        ArrayList<Piece> white = new ArrayList<>();
-        ArrayList<Piece> black = new ArrayList<>();
-        Bishop bishop = new Bishop(PieceColor.WHITE, new Square(7, 1));
-        Bishop bishop1 = new Bishop(PieceColor.WHITE, new Square(7, 6));
-        Knight knight = new Knight(PieceColor.WHITE, new Square(7, 5));
-        Knight knight1 = new Knight(PieceColor.WHITE, new Square(7, 2));
-        Rook rook = new Rook(PieceColor.WHITE, new Square(7, 0));
-        Rook rook1 = new Rook(PieceColor.WHITE, new Square(7, 7));
-        Queen queen = new Queen(PieceColor.WHITE, new Square(7, 3));
-
-        white.add(bishop);
-        white.add(bishop1);
-        white.add(knight);
-        white.add(knight1);
-        white.add(rook);
-        white.add(rook1);
-        white.add(queen);
-
-        Bishop blackbishop = new Bishop(PieceColor.BLACK, new Square(0, 1));
-        Bishop blackbishop1 = new Bishop(PieceColor.BLACK, new Square(0, 6));
-        Knight blackknight = new Knight(PieceColor.BLACK, new Square(0, 5));
-        Knight blackknight1 = new Knight(PieceColor.BLACK, new Square(0, 2));
-        Rook blackrook = new Rook(PieceColor.BLACK, new Square(0, 0));
-        Rook blackrook1 = new Rook(PieceColor.BLACK, new Square(0, 7));
-        Queen blackqueen = new Queen(PieceColor.BLACK, new Square(0, 3));
-
-        black.add(blackbishop);
-        black.add(blackbishop1);
-        black.add(blackknight);
-        black.add(blackknight1);
-        black.add(blackrook);
-        black.add(blackrook1);
-        black.add(blackqueen);
-
-//        board = new Board(white, black);
-            board = new Board();
+        board = new Board();
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
         p2 = new HumanPlayer("Black", PieceColor.BLACK, this);
 
         gc = cv.getGraphicsContext2D();
-
         cv.setOnMouseClicked(event -> {
                     if (selectedPiece == null) {
                         selectPieceToMove(event.getX(), event.getY());
@@ -91,7 +53,6 @@ public class GameEngine implements Initializable, IControls {
         );
 
         drawBoard();
-        draw();
     }
 
     private void reset() {
@@ -101,22 +62,22 @@ public class GameEngine implements Initializable, IControls {
         whiteToMove = true;
     }
 
-
     private void drawBoard() {
         for (int i = 0; i < 64; i++) {
             int c = (i % 8);
             int r = (i / 8) % 8;
             if (r % 2 == 0 && (i + 1) % 2 == 0) {
                 gc.setFill(Color.GREY);
-            }else if(r % 2 != 0 && i % 2 == 0){
+            } else if (r % 2 != 0 && i % 2 == 0) {
                 gc.setFill(Color.GREY);
-            }else {
+            } else {
                 gc.setFill(Color.WHITE);
             }
             gc.fillRect(c * CELL_SIZE + 1, r * CELL_SIZE + 1, IMAGE_SIZE, IMAGE_SIZE);
             gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
             gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
         }
+        drawPieces();
     }
 
     public void doMove(Move move) {
@@ -128,6 +89,7 @@ public class GameEngine implements Initializable, IControls {
         whiteToMove = !whiteToMove;
         Player playerToMove = getPlayersTurn();
         if (!(playerToMove instanceof HumanPlayer)) {
+            // AI's turn
             ArrayList<Move> legalMoves = board.generateValidMoves(playerToMove.getColor());
             playerToMove.selectMove(legalMoves);
         }
@@ -140,14 +102,11 @@ public class GameEngine implements Initializable, IControls {
         return p2;
     }
 
-    private void draw() {
-        ArrayList<Piece> whitePieces = board.getWhitePieces();
-        ArrayList<Piece> blackPieces = board.getBlackPieces();
-
-        for (Piece piece : whitePieces) {
+    private void drawPieces() {
+        for (Piece piece : board.getWhitePieces()) {
             drawPiece(piece);
         }
-        for (Piece piece : blackPieces) {
+        for (Piece piece : board.getBlackPieces()) {
             drawPiece(piece);
         }
     }
@@ -171,37 +130,30 @@ public class GameEngine implements Initializable, IControls {
 
     private void drawMove(double x, double y, Piece piece) {
         endSquare = selectSquare(x, y);
-        PieceColor opponentColor = whiteToMove ? PieceColor.BLACK : PieceColor.WHITE;
-
         boolean legalClick = false;
 
-        ArrayList<Move> possibleMoves = piece.validMoves(board.getBitmapPositions(), board.getBitmapAttackingPositions(opponentColor));
-
-
+        ArrayList<Move> possibleMoves = board.generateValidMoves(piece);
         for (Move move : possibleMoves) {
             if (endSquare.equals(move.getEndSquare())) {
                 legalClick = true;
             }
         }
+
         if (legalClick) {
             Move move = new Move(startSquare, endSquare, piece);
             doMove(move);
             startSquare = endSquare = null;
         }
-        drawBoard();
-        draw();
 
+        drawBoard();
         selectedPiece = null;
     }
 
-    private void drawPossibleMoves(Piece piece, GraphicsContext gc) {
-
+    private void drawPossibleMoves(Piece piece) {
         if (piece == null) return;
 
-        PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
-
         int[][] bitmapPositions = board.getBitmapPositions();
-        ArrayList<Move> possibleMoves = piece.validMoves(bitmapPositions, board.getBitmapAttackingPositions(opponentColor));
+        ArrayList<Move> possibleMoves = board.generateValidMoves(piece);
 
         for (Move validMove : possibleMoves) {
             int vx = validMove.getEndSquare().getColumn();
@@ -214,7 +166,7 @@ public class GameEngine implements Initializable, IControls {
         }
     }
 
-    //Hjelpemetoder
+    // Util methods
     private Piece getPieceOnSquare(Square square, PieceColor color) {
         Piece pieceOnSquare = null;
         if (color.equals(PieceColor.WHITE)) {
@@ -237,7 +189,7 @@ public class GameEngine implements Initializable, IControls {
         PieceColor color = whiteToMove ? PieceColor.WHITE : PieceColor.BLACK;
         startSquare = selectSquare(x, y);
         selectedPiece = getPieceOnSquare(startSquare, color);
-        drawPossibleMoves(selectedPiece, gc);
+        drawPossibleMoves(selectedPiece);
     }
 
     private Square selectSquare(double x, double y) {

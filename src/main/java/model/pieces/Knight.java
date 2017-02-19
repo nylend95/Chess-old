@@ -28,6 +28,12 @@ public class Knight extends Piece {
     }
 
     @Override
+    public ArrayList<Square> attackSquaresPenetrate(int[][] bitmapPositions) {
+        int[][] dir = {{1,2}, {1,-2}, {2,-1}, {2,1}, {-1,2}, {-1,-2}, {-2,1}, {-2,-1}};
+        return checkAttackDirectionsPenetrate(dir, bitmapPositions, 1);
+    }
+
+    @Override
     public void captureFreeMoves() {
 
     }
