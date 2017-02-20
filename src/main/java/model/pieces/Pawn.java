@@ -15,7 +15,7 @@ public class Pawn extends Piece {
     private Piece promotedTo;
     private final boolean moveUp;
 
-    public Pawn(PieceColor color, Square square, boolean moveUp) {
+    public Pawn(PieceColor color, Square square) {
         super(color, square);
         this.moveUp = (color == PieceColor.WHITE);
     }
@@ -41,22 +41,18 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public void setSquare(Square square) {
+        if (promotedTo != null) {
+            promotedTo.setSquare(square);
+        }
+        super.setSquare(square);
+    }
+
+    @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
-        // TODO finish promoted, and clean code.
         ArrayList<Move> legalMoves;
-        if (!promoted) {
+        if (promotedTo == null) {
             legalMoves = normalMoves(bitmapPositions);
-            if (moveUp) {
-                if (getSquare().getRow() == 0) {
-                    promoted = true;
-                    setPromotedTo(new Queen(PieceColor.WHITE, new Square(getSquare().getRow(), getSquare().getColumn())));
-                }
-            } else {
-                if (getSquare().getRow() == 7) {
-                    promoted = true;
-                    setPromotedTo(new Queen(PieceColor.BLACK, new Square(getSquare().getRow(), getSquare().getColumn())));
-                }
-            }
         } else {
             return promotedTo.validMoves(bitmapPositions, bitmapAttackingPositions);
         }
@@ -94,7 +90,7 @@ public class Pawn extends Piece {
     private ArrayList<Move> attackMoves(int[][] dir, int[][] bitmapPositions) {
         ArrayList<Move> attackMoves = new ArrayList<>();
 
-        int selfValue = (moveUp) ? 1 : -1;
+        int opponentValue = (moveUp) ? -1 : 1;
         int xStart = getSquare().getColumn();
         int yStart = getSquare().getRow();
 
@@ -108,10 +104,8 @@ public class Pawn extends Piece {
             }
 
             // Capture or crash in own piece
-            if (bitmapPositions[y_new][x_new] != 0) {
-                if (bitmapPositions[y_new][x_new] != selfValue) {
-                    attackMoves.add(new Move(getSquare(), new Square(y_new, x_new), this));
-                }
+            if (bitmapPositions[y_new][x_new] == opponentValue) {
+                attackMoves.add(new Move(getSquare(), new Square(y_new, x_new), this));
             }
         }
         return attackMoves;
@@ -119,6 +113,10 @@ public class Pawn extends Piece {
 
     @Override
     public ArrayList<Square> attackSquares(int[][] bitmapPositions) {
+        if (promotedTo != null) {
+            return promotedTo.attackSquares(bitmapPositions);
+        }
+
         ArrayList<Square> attackSquares = new ArrayList<>();
         int[][] atkDir;
         if (moveUp) {
@@ -127,7 +125,7 @@ public class Pawn extends Piece {
             atkDir = new int[][]{{1, 1}, {-1, 1}};
         }
 
-        int selfValue = (moveUp) ? 1 : -1;
+        int opponentValue = (moveUp) ? -1 : 1;
         int xStart = getSquare().getColumn();
         int yStart = getSquare().getRow();
 
@@ -141,10 +139,8 @@ public class Pawn extends Piece {
             }
 
             // Capture or crash in own piece
-            if (bitmapPositions[y_new][x_new] != 0) {
-                if (bitmapPositions[y_new][x_new] != selfValue) {
-                    attackSquares.add(new Square(y_new, x_new));
-                }
+            if (bitmapPositions[y_new][x_new] == opponentValue) {
+                attackSquares.add(new Square(y_new, x_new));
             }
         }
         return attackSquares;

@@ -10,6 +10,7 @@ import main.java.model.*;
 import main.java.model.pieces.*;
 import main.java.model.players.HumanPlayer;
 import main.java.model.players.Player;
+import main.java.model.players.RandomAgent;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class GameEngine implements Initializable, IControls {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // TODO if AI is first to go (white) nothing happens!
         board = new Board();
         p1 = new HumanPlayer("White", PieceColor.WHITE, this);
         p2 = new HumanPlayer("Black", PieceColor.BLACK, this);
@@ -82,6 +84,11 @@ public class GameEngine implements Initializable, IControls {
 
     public void doMove(Move move) {
         board.movePiece(move);
+
+        if (board.isMovePromotion(move)){
+            // Promotion choice
+            System.out.println("Piece promoted!!");
+        }
 
         // TODO check for win/remis
 

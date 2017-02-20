@@ -65,8 +65,8 @@ public class QueenTest {
         white.add(queen);
 
         ArrayList<Piece> black = new ArrayList<>();
-        black.add(new Pawn(PieceColor.BLACK, new Square(3, 3), false));
-        black.add(new Pawn(PieceColor.BLACK, new Square(4, 3), false));
+        black.add(new Pawn(PieceColor.BLACK, new Square(3, 3)));
+        black.add(new Pawn(PieceColor.BLACK, new Square(4, 3)));
 
         board = new Board(white, black);
 
@@ -106,7 +106,7 @@ public class QueenTest {
         white.add(new King(PieceColor.WHITE, new Square(5,3)));
 
         black = new ArrayList<>();
-        black.add(new Pawn(PieceColor.BLACK, new Square(3, 3), false));
+        black.add(new Pawn(PieceColor.BLACK, new Square(3, 3)));
 
         board = new Board(white, black);
 

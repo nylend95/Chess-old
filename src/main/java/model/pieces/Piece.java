@@ -5,7 +5,6 @@ import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
-import javax.xml.parsers.FactoryConfigurationError;
 import java.util.ArrayList;
 
 /**
@@ -66,7 +65,7 @@ public abstract class Piece {
 
                 // Capture or crash in own piece
                 if (bitmapPositions[y_new][x_new] != 0) {
-                    if (bitmapPositions[y_new][x_new] != selfValue && !(this instanceof Pawn)) {
+                    if (bitmapPositions[y_new][x_new] != selfValue) {
                         validMoves.add(new Move(square, new Square(y_new, x_new), this));
                     }
                     break;

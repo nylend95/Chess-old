@@ -41,7 +41,7 @@ public class Board {
 
         //White pieces
         for (int i = 0; i < 8; i++) {
-            whitePieces.add(new Pawn(PieceColor.WHITE, new Square(6, i), false));
+            whitePieces.add(new Pawn(PieceColor.WHITE, new Square(6, i)));
         }
         whitePieces.add(new Rook(PieceColor.WHITE, new Square(7, 0)));
         whitePieces.add(new Rook(PieceColor.WHITE, new Square(7, 7)));
@@ -54,7 +54,7 @@ public class Board {
 
         //Black pieces
         for (int i = 0; i < 8; i++) {
-            blackPieces.add(new Pawn(PieceColor.BLACK, new Square(1, i), false));
+            blackPieces.add(new Pawn(PieceColor.BLACK, new Square(1, i)));
         }
         blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 0)));
         blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 7)));
@@ -79,7 +79,6 @@ public class Board {
          * Make a move on the board
          */
         Piece pieceToBeMoved = move.getPiece();
-        ArrayList<Piece> movedList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
         ArrayList<Piece> captureList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? blackPieces : whitePieces;
 
         // Do castling
@@ -93,13 +92,16 @@ public class Board {
         }
 
         // Move piece
-        for (Piece piece : movedList) {
-            if (pieceToBeMoved.equals(piece)) {
-                piece.setSquare(move.getEndSquare());
-                piece.setMoved(true);
-                break;
-            }
+        move.getPiece().setSquare(move.getEndSquare());
+        move.getPiece().setMoved(true);
+
+        if (isMovePromotion(move)){
+            // Promotion
+            Pawn pawn = (Pawn) move.getPiece();
+            pawn.setPromoted(true);
+            pawn.setPromotedTo(new Queen(pawn.getColor(), pawn.getSquare()));
         }
+
 
         // Possibly, capture a piece
         for (Piece piece : captureList) {
@@ -116,6 +118,10 @@ public class Board {
         updateBitmapAttackingPositions();
 
         return true;
+    }
+
+    public boolean isMovePromotion(Move move) {
+        return (move.getPiece() instanceof Pawn && (move.getEndSquare().getRow() == 7 || move.getEndSquare().getRow() == 0));
     }
 
     private boolean isMoveCastling(Move move) {
@@ -181,7 +187,7 @@ public class Board {
 
         moveHistory.remove(moveHistory.size() - 1);
 
-        // TODO especially this part.
+        // TODO Convert moveHistory to hashmap?
         // Resets isMoved() for moved piece if it has not been moved before
         movedPiece.setMoved(false);
         for (Move move : moveHistory) {
@@ -195,8 +201,15 @@ public class Board {
         updateBitmapAttackingPositions();
 
         // If last move is castling, undo twice.
-        if (isMoveCastling(lastMove)){
+        if (isMoveCastling(lastMove)) {
             undoLastMove();
+        }
+
+        // Undo promotion
+        if (isMovePromotion(lastMove)){
+            Pawn pawn = (Pawn) movedPiece;
+            pawn.setPromoted(false);
+            pawn.setPromotedTo(null);
         }
     }
 
@@ -240,6 +253,7 @@ public class Board {
          * Generates legal moves for one piece
          */
         updateCastling(piece.getColor());
+
         ArrayList<Move> validMoves = new ArrayList<>();
 
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;

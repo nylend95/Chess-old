@@ -88,10 +88,10 @@ public class KnightTest {
 
         //Initial positions
         Knight knightStart = new Knight(PieceColor.WHITE, new Square(7,6));
-        Pawn pawn1 = new Pawn(PieceColor.WHITE, new Square(6,7), false);
-        Pawn pawn2 = new Pawn(PieceColor.WHITE, new Square(6,6), false);
-        Pawn pawn3 = new Pawn(PieceColor.WHITE, new Square(6,5), false);
-        Pawn pawn4 = new Pawn(PieceColor.WHITE, new Square(6,4), false);
+        Pawn pawn1 = new Pawn(PieceColor.WHITE, new Square(6,7));
+        Pawn pawn2 = new Pawn(PieceColor.WHITE, new Square(6,6));
+        Pawn pawn3 = new Pawn(PieceColor.WHITE, new Square(6,5));
+        Pawn pawn4 = new Pawn(PieceColor.WHITE, new Square(6,4));
         white = new ArrayList<>();
         white.add(knightStart);
         white.add(pawn1);

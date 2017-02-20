@@ -64,9 +64,9 @@ public class KingTest {
         white = new ArrayList<>();
         king = new King(PieceColor.WHITE, new Square(7, 4));
         white.add(king);
-        white.add(new Pawn(PieceColor.WHITE, new Square(6, 4), true));
-        white.add(new Pawn(PieceColor.WHITE, new Square(6, 3), true));
-        white.add(new Pawn(PieceColor.WHITE, new Square(6, 5), true));
+        white.add(new Pawn(PieceColor.WHITE, new Square(6, 4)));
+        white.add(new Pawn(PieceColor.WHITE, new Square(6, 3)));
+        white.add(new Pawn(PieceColor.WHITE, new Square(6, 5)));
         white.add(new Rook(PieceColor.WHITE, new Square(7, 0)));
         white.add(new Rook(PieceColor.WHITE, new Square(7, 7)));
 
