@@ -43,15 +43,16 @@ public class Pawn extends Piece {
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         // TODO finish promoted, and clean code.
-        ArrayList<Move> legalMoves = new ArrayList<>();
+        ArrayList<Move> legalMoves;
         if (!promoted) {
             legalMoves = normalMoves(bitmapPositions);
             if (moveUp) {
-                if (getSquare().getRow() <= 6) {
+                if (getSquare().getRow() == 0) {
                     promoted = true;
+                    setPromotedTo(new Queen(PieceColor.WHITE, new Square(getSquare().getRow(), getSquare().getColumn())));
                 }
             } else {
-                if (getSquare().getRow() >= 1) {
+                if (getSquare().getRow() == 7) {
                     promoted = true;
                     setPromotedTo(new Queen(PieceColor.BLACK, new Square(getSquare().getRow(), getSquare().getColumn())));
                 }
