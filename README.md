@@ -9,4 +9,3 @@ Current known bugs and missing implementation:
 - AI needs to get a copy of board
 - If AI is white, nothing happens
 - Controls for starting new game and choosing players
--
