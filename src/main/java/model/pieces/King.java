@@ -37,26 +37,24 @@ public class King extends Piece {
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
         int[][] dir = {{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {-1, 0}, {0, -1}, {0, 1}, {1, 0}};
         ArrayList<Move> validMoves = checkDirections(dir, bitmapPositions, 1);
+
+        // Ugly code to check castling to both sides
         if (!isMoved() && castlingLeft) {
             if (getColor() == PieceColor.WHITE && bitmapPositions[7][2] == 0 && bitmapPositions[7][3] == 0 &&
-                    bitmapAttackingPositions[7][2] == 0 && bitmapAttackingPositions[7][3] == 0) {
-                System.out.println("Castling to left is possible for white");
-                // TODO castling to both sides!!
+                    bitmapAttackingPositions[7][2] == 0 && bitmapAttackingPositions[7][3] == 0 && bitmapAttackingPositions[7][4] == 0) {
+                validMoves.add(new Move(getSquare(), new Square(7,2), this));
             }else if(getColor() == PieceColor.BLACK && bitmapPositions[0][2] == 0 && bitmapPositions[0][3] == 0 &&
-                    bitmapAttackingPositions[0][2] == 0 && bitmapAttackingPositions[0][3] == 0){
-                System.out.println("Castling to left is possible for black");
-                // TODO castling to both sides!!
+                    bitmapAttackingPositions[0][2] == 0 && bitmapAttackingPositions[0][3] == 0 && bitmapAttackingPositions[0][4] == 0){
+                validMoves.add(new Move(getSquare(), new Square(0,2), this));
             }
         }
         if (!isMoved() && castlingRight) {
             if (getColor() == PieceColor.WHITE && bitmapPositions[7][5] == 0 && bitmapPositions[7][6] == 0 &&
-                    bitmapAttackingPositions[7][5] == 0 && bitmapAttackingPositions[7][6] == 0) {
-                System.out.println("Castling to right is possible for white");
-                // TODO castling to both sides!!
+                    bitmapAttackingPositions[7][5] == 0 && bitmapAttackingPositions[7][6] == 0 && bitmapAttackingPositions[7][4] == 0) {
+                validMoves.add(new Move(getSquare(), new Square(7,6), this));
             }else if(getColor() == PieceColor.BLACK && bitmapPositions[0][5] == 0 && bitmapPositions[0][6] == 0 &&
-                    bitmapAttackingPositions[0][5] == 0 && bitmapAttackingPositions[0][6] == 0){
-                System.out.println("Castling to right is possible for black");
-                // TODO castling to both sides!!
+                    bitmapAttackingPositions[0][5] == 0 && bitmapAttackingPositions[0][6] == 0 && bitmapAttackingPositions[0][4] == 0){
+                validMoves.add(new Move(getSquare(), new Square(0,6), this));
             }
         }
 

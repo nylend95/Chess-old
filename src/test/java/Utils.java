@@ -22,9 +22,6 @@ class Utils {
                     exists = true;
                 }
             }
-            if (!exists) {
-                System.out.println(gen_move);
-            }
             Assert.assertTrue(exists);
         }
 

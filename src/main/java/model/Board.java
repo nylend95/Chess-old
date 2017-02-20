@@ -5,6 +5,8 @@ import main.java.model.pieces.*;
 
 import java.util.ArrayList;
 
+import static java.lang.StrictMath.abs;
+
 /**
  * Created by Jesper Nylend on 10.02.2017.
  * s305070
@@ -80,6 +82,16 @@ public class Board {
         ArrayList<Piece> movedList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? whitePieces : blackPieces;
         ArrayList<Piece> captureList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? blackPieces : whitePieces;
 
+        // Do castling
+        if (isMoveCastling(move)) {
+            int row = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? 7 : 0;
+            int[] col = (move.getEndSquare().getColumn() == 2) ? new int[]{0, 3} : new int[]{7, 5};
+            Square rookSquare = new Square(row, col[0]);
+            Rook rookToBeCastled = (Rook) findPiece(pieceToBeMoved.getColor(), rookSquare);
+            Move rookMove = new Move(rookSquare, new Square(row, col[1]), rookToBeCastled);
+            movePiece(rookMove);
+        }
+
         // Move piece
         for (Piece piece : movedList) {
             if (pieceToBeMoved.equals(piece)) {
@@ -106,8 +118,23 @@ public class Board {
         return true;
     }
 
+    private boolean isMoveCastling(Move move) {
+        return (move.getPiece() instanceof King && move.getStartSquare().getColumn() == 4 &&
+                abs(move.getEndSquare().getColumn() - move.getStartSquare().getColumn()) == 2);
+    }
 
-    public Piece findKing(PieceColor color) {
+    public Piece findPiece(PieceColor color, Square square) {
+        ArrayList<Piece> pieces = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        for (Piece piece : pieces) {
+            if (piece.getSquare().equals(square)) {
+                return piece;
+            }
+        }
+        return null;
+    }
+
+
+    public King findKing(PieceColor color) {
         /*
          * Finds the king piece for color
          */
@@ -116,7 +143,7 @@ public class Board {
         for (Piece piece :
                 pieces) {
             if (piece instanceof King) {
-                return piece;
+                return (King) piece;
             }
         }
         return null;
@@ -154,7 +181,7 @@ public class Board {
 
         moveHistory.remove(moveHistory.size() - 1);
 
-        // TODO especially this part. And have to recheck castling possibilities for this color.
+        // TODO especially this part.
         // Resets isMoved() for moved piece if it has not been moved before
         movedPiece.setMoved(false);
         for (Move move : moveHistory) {
@@ -166,12 +193,38 @@ public class Board {
 
         updateBitmapPositions();
         updateBitmapAttackingPositions();
+
+        // If last move is castling, undo twice.
+        if (isMoveCastling(lastMove)){
+            undoLastMove();
+        }
+    }
+
+    public void updateCastling(PieceColor color) {
+        boolean leftPossible = false;
+        boolean rightPossible = false;
+        ArrayList<Piece> pieces = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        for (Piece piece : pieces) {
+            if (piece instanceof Rook) {
+                if (piece.getSquare().getColumn() == 0 && !piece.isMoved()) {
+                    leftPossible = true;
+                }
+                if (piece.getSquare().getColumn() == 7 && !piece.isMoved()) {
+                    rightPossible = true;
+                }
+            }
+        }
+
+        King king = findKing(color);
+        king.setCastlingLeft(leftPossible);
+        king.setCastlingRight(rightPossible);
     }
 
     public ArrayList<Move> generateValidMoves(PieceColor color) {
         /*
          * Returns every legal move for one color
          */
+        updateCastling(color);
         ArrayList<Piece> selectedPieceSet = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
         ArrayList<Move> validMoves = new ArrayList<>();
         for (Piece piece : selectedPieceSet) {
@@ -186,13 +239,10 @@ public class Board {
         /*
          * Generates legal moves for one piece
          */
-        // TODO castling for king (check move history for moved castles or moved king!
+        updateCastling(piece.getColor());
         ArrayList<Move> validMoves = new ArrayList<>();
 
         PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
-
-        boolean isCheck = isCheck(piece.getColor());
-        System.out.println(piece.getColor() + " - " + isCheck);
 
         ArrayList<Move> moves = piece.validMoves(bitmapPositions, getBitmapAttackingPositions(opponentColor));
         for (Move possibleMove : moves) {
