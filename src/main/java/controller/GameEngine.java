@@ -83,14 +83,12 @@ public class GameEngine implements Initializable, IControls {
     }
 
     public void doMove(Move move) {
-        board.movePiece(move);
+        board.movePiece(move, true);
 
         if (board.isMovePromotion(move)){
             // Promotion choice
             System.out.println("Piece promoted!!");
         }
-
-        // TODO check for win/remis
 
         // Next player's turn
         whiteToMove = !whiteToMove;

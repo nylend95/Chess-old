@@ -6,6 +6,7 @@ import main.java.model.pieces.*;
 import java.util.ArrayList;
 
 import static java.lang.StrictMath.abs;
+import static main.java.model.PieceColor.*;
 
 /**
  * Created by Jesper Nylend on 10.02.2017.
@@ -20,6 +21,8 @@ public class Board {
     private int[][] bitmapAttackingPositionsBlack;
 
     private ArrayList<Move> moveHistory;
+
+    private int status; // 0 going, 1 white win, -1 black win, 2 stalemate
 
     public Board() {
         resetBoard();
@@ -41,29 +44,29 @@ public class Board {
 
         //White pieces
         for (int i = 0; i < 8; i++) {
-            whitePieces.add(new Pawn(PieceColor.WHITE, new Square(6, i)));
+            whitePieces.add(new Pawn(WHITE, new Square(6, i)));
         }
-        whitePieces.add(new Rook(PieceColor.WHITE, new Square(7, 0)));
-        whitePieces.add(new Rook(PieceColor.WHITE, new Square(7, 7)));
-        whitePieces.add(new Bishop(PieceColor.WHITE, new Square(7, 2)));
-        whitePieces.add(new Bishop(PieceColor.WHITE, new Square(7, 5)));
-        whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 1)));
-        whitePieces.add(new Knight(PieceColor.WHITE, new Square(7, 6)));
-        whitePieces.add(new Queen(PieceColor.WHITE, new Square(7, 3)));
-        whitePieces.add(new King(PieceColor.WHITE, new Square(7, 4)));
+        whitePieces.add(new Rook(WHITE, new Square(7, 0)));
+        whitePieces.add(new Rook(WHITE, new Square(7, 7)));
+        whitePieces.add(new Bishop(WHITE, new Square(7, 2)));
+        whitePieces.add(new Bishop(WHITE, new Square(7, 5)));
+        whitePieces.add(new Knight(WHITE, new Square(7, 1)));
+        whitePieces.add(new Knight(WHITE, new Square(7, 6)));
+        whitePieces.add(new Queen(WHITE, new Square(7, 3)));
+        whitePieces.add(new King(WHITE, new Square(7, 4)));
 
         //Black pieces
         for (int i = 0; i < 8; i++) {
-            blackPieces.add(new Pawn(PieceColor.BLACK, new Square(1, i)));
+            blackPieces.add(new Pawn(BLACK, new Square(1, i)));
         }
-        blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 0)));
-        blackPieces.add(new Rook(PieceColor.BLACK, new Square(0, 7)));
-        blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 2)));
-        blackPieces.add(new Bishop(PieceColor.BLACK, new Square(0, 5)));
-        blackPieces.add(new Knight(PieceColor.BLACK, new Square(0, 1)));
-        blackPieces.add(new Knight(PieceColor.BLACK, new Square(0, 6)));
-        blackPieces.add(new Queen(PieceColor.BLACK, new Square(0, 3)));
-        blackPieces.add(new King(PieceColor.BLACK, new Square(0, 4)));
+        blackPieces.add(new Rook(BLACK, new Square(0, 0)));
+        blackPieces.add(new Rook(BLACK, new Square(0, 7)));
+        blackPieces.add(new Bishop(BLACK, new Square(0, 2)));
+        blackPieces.add(new Bishop(BLACK, new Square(0, 5)));
+        blackPieces.add(new Knight(BLACK, new Square(0, 1)));
+        blackPieces.add(new Knight(BLACK, new Square(0, 6)));
+        blackPieces.add(new Queen(BLACK, new Square(0, 3)));
+        blackPieces.add(new King(BLACK, new Square(0, 4)));
 
         init();
     }
@@ -72,43 +75,55 @@ public class Board {
         moveHistory = new ArrayList<>();
         updateBitmapPositions();
         updateBitmapAttackingPositions();
+        status = 0;
     }
 
-    public boolean movePiece(Move move) {
+    public boolean movePiece(Move move, boolean realMove) {
         /*
          * Make a move on the board
          */
         Piece pieceToBeMoved = move.getPiece();
-        ArrayList<Piece> captureList = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? blackPieces : whitePieces;
+        ArrayList<Piece> captureList = (pieceToBeMoved.getColor() == WHITE) ? blackPieces : whitePieces;
 
         // Do castling
         if (isMoveCastling(move)) {
-            int row = (pieceToBeMoved.getColor() == PieceColor.WHITE) ? 7 : 0;
+            int row = (pieceToBeMoved.getColor() == WHITE) ? 7 : 0;
             int[] col = (move.getEndSquare().getColumn() == 2) ? new int[]{0, 3} : new int[]{7, 5};
             Square rookSquare = new Square(row, col[0]);
             Rook rookToBeCastled = (Rook) findPiece(pieceToBeMoved.getColor(), rookSquare);
             Move rookMove = new Move(rookSquare, new Square(row, col[1]), rookToBeCastled);
-            movePiece(rookMove);
+            movePiece(rookMove, realMove);
         }
 
         // Move piece
         move.getPiece().setSquare(move.getEndSquare());
         move.getPiece().setMoved(true);
 
-        if (isMovePromotion(move)){
+        if (isMovePromotion(move)) {
             // Promotion
             Pawn pawn = (Pawn) move.getPiece();
             pawn.setPromoted(true);
             pawn.setPromotedTo(new Queen(pawn.getColor(), pawn.getSquare()));
         }
 
-
-        // Possibly, capture a piece
-        for (Piece piece : captureList) {
-            if (piece.getSquare().equals(move.getEndSquare())) {
-                captureList.remove(piece);
-                move.setCapturedPiece(piece);
-                break;
+        if (isMoveEnPasant(move)) {
+            Piece lastMovedPawn = moveHistory.get(moveHistory.size() - 1).getPiece();
+            for (Piece piece : captureList) {
+                if (piece.equals(lastMovedPawn)) {
+                    captureList.remove(piece);
+                    move.setCapturedPiece(piece);
+                    System.out.println("En pasant removed!");
+                    break;
+                }
+            }
+        } else {
+            // Possibly, capture a piece
+            for (Piece piece : captureList) {
+                if (piece.getSquare().equals(move.getEndSquare())) {
+                    captureList.remove(piece);
+                    move.setCapturedPiece(piece);
+                    break;
+                }
             }
         }
 
@@ -117,7 +132,27 @@ public class Board {
         updateBitmapPositions();
         updateBitmapAttackingPositions();
 
+        if (realMove) {
+            updateStatus();
+        }
+
         return true;
+    }
+
+    public boolean isMoveEnPasant(Move move) {
+        if (moveHistory.size() == 0)
+            return false;
+
+        Piece piece = move.getPiece();
+        Move lastMove = moveHistory.get(moveHistory.size() - 1);
+        if (lastMove.getPiece() instanceof Pawn && abs(lastMove.getEndSquare().getRow() - lastMove.getStartSquare().getRow()) == 2 && piece instanceof Pawn && ((move.getStartSquare().getRow() == 4 && piece.getColor() == BLACK) || (move.getStartSquare().getRow() == 3 && piece.getColor() == WHITE))) {
+            Pawn pawn = (Pawn) piece;
+
+            if (pawn.getPromotedTo() == null && move.getEndSquare().getColumn() == lastMove.getEndSquare().getColumn()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isMovePromotion(Move move) {
@@ -130,7 +165,7 @@ public class Board {
     }
 
     public Piece findPiece(PieceColor color, Square square) {
-        ArrayList<Piece> pieces = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        ArrayList<Piece> pieces = (color == WHITE) ? whitePieces : blackPieces;
         for (Piece piece : pieces) {
             if (piece.getSquare().equals(square)) {
                 return piece;
@@ -144,7 +179,7 @@ public class Board {
         /*
          * Finds the king piece for color
          */
-        ArrayList<Piece> pieces = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        ArrayList<Piece> pieces = (color == WHITE) ? whitePieces : blackPieces;
 
         for (Piece piece :
                 pieces) {
@@ -159,7 +194,7 @@ public class Board {
         /*
          * Is the king for color in check?
          */
-        int[][] opponentAttackingSquares = (color == PieceColor.WHITE) ? bitmapAttackingPositionsBlack : bitmapAttackingPositionsWhite;
+        int[][] opponentAttackingSquares = (color == WHITE) ? bitmapAttackingPositionsBlack : bitmapAttackingPositionsWhite;
         return findKing(color).toBeCaptured(opponentAttackingSquares);
     }
 
@@ -178,7 +213,7 @@ public class Board {
 
         Piece capturedPiece = lastMove.getCapturedPiece();
         if (capturedPiece != null) {
-            if (capturedPiece.getColor() == PieceColor.WHITE) {
+            if (capturedPiece.getColor() == WHITE) {
                 whitePieces.add(capturedPiece);
             } else {
                 blackPieces.add(capturedPiece);
@@ -206,17 +241,36 @@ public class Board {
         }
 
         // Undo promotion
-        if (isMovePromotion(lastMove)){
+        if (isMovePromotion(lastMove)) {
             Pawn pawn = (Pawn) movedPiece;
             pawn.setPromoted(false);
             pawn.setPromotedTo(null);
         }
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    private void updateStatus() {
+        if (moveHistory.size() > 0) {
+            PieceColor nextTurn = (moveHistory.get(moveHistory.size() - 1).getPiece().getColor() == WHITE) ? BLACK : WHITE;
+            PieceColor previousTurn = (nextTurn == WHITE) ? BLACK : WHITE;
+            if (generateValidMoves(nextTurn).size() == 0) {
+                if (findKing(nextTurn).toBeCaptured(getBitmapAttackingPositions(previousTurn))) {
+                    status = (nextTurn == WHITE) ? -1 : 1;
+                } else {
+                    status = 2;
+                }
+            }
+        }
+        System.out.println("Status:" + status);
+    }
+
     public void updateCastling(PieceColor color) {
         boolean leftPossible = false;
         boolean rightPossible = false;
-        ArrayList<Piece> pieces = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        ArrayList<Piece> pieces = (color == WHITE) ? whitePieces : blackPieces;
         for (Piece piece : pieces) {
             if (piece instanceof Rook) {
                 if (piece.getSquare().getColumn() == 0 && !piece.isMoved()) {
@@ -238,7 +292,7 @@ public class Board {
          * Returns every legal move for one color
          */
         updateCastling(color);
-        ArrayList<Piece> selectedPieceSet = (color == PieceColor.WHITE) ? whitePieces : blackPieces;
+        ArrayList<Piece> selectedPieceSet = (color == WHITE) ? whitePieces : blackPieces;
         ArrayList<Move> validMoves = new ArrayList<>();
         for (Piece piece : selectedPieceSet) {
             validMoves.addAll(generateValidMoves(piece));
@@ -256,11 +310,27 @@ public class Board {
 
         ArrayList<Move> validMoves = new ArrayList<>();
 
-        PieceColor opponentColor = (piece.getColor() == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
+        PieceColor opponentColor = (piece.getColor() == WHITE) ? BLACK : WHITE;
 
         ArrayList<Move> moves = piece.validMoves(bitmapPositions, getBitmapAttackingPositions(opponentColor));
+
+        // En passant
+        if (moveHistory.size() > 0) {
+            Move lastMove = moveHistory.get(moveHistory.size() - 1);
+            if (abs(lastMove.getEndSquare().getColumn() - piece.getSquare().getColumn()) == 1 && lastMove.getPiece() instanceof Pawn &&
+                    abs(lastMove.getEndSquare().getRow() - lastMove.getStartSquare().getRow()) == 2 && piece instanceof Pawn &&
+                    ((piece.getSquare().getRow() == 4 && piece.getColor() == BLACK) || (piece.getSquare().getRow() == 3 && piece.getColor() == WHITE))) {
+                Pawn pawn = (Pawn) piece;
+                int row = (pawn.getColor() == WHITE) ? 2 : 5;
+
+                if (pawn.getPromotedTo() == null) {
+                    moves.add(new Move(pawn.getSquare(), new Square(row, lastMove.getEndSquare().getColumn()), pawn));
+                }
+            }
+        }
+
         for (Move possibleMove : moves) {
-            movePiece(possibleMove);
+            movePiece(possibleMove, false);
 
             // Check if move causes a check
             if (!isCheck(piece.getColor())) {
@@ -317,7 +387,7 @@ public class Board {
     }
 
     public int[][] getBitmapAttackingPositions(PieceColor color) {
-        if (color == PieceColor.BLACK) {
+        if (color == BLACK) {
             return bitmapAttackingPositionsBlack;
         }
         return bitmapAttackingPositionsWhite;
