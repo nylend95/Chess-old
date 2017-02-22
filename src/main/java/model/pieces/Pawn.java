@@ -86,11 +86,35 @@ public class Pawn extends Piece {
         return legalMoves;
     }
 
+    @Override
+    ArrayList<Move> checkDirections(int[][] dir, int[][] bitmapPositions, int maxSteps) {
+        ArrayList<Move> validMoves = new ArrayList<>();
+
+        int xStart = getSquare().getColumn();
+        int yStart = getSquare().getRow();
+
+        for (int[] d : dir) {
+            for (int i = 1; i <= maxSteps; i++) {
+                int x_new = xStart + i * d[0];
+                int y_new = yStart + i * d[1];
+
+                // Out of bounds or something in the cell
+                if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7 || bitmapPositions[y_new][x_new] != 0) {
+                    break;
+                }
+
+                // Valid move
+                validMoves.add(new Move(getSquare(), new Square(y_new, x_new), this));
+            }
+        }
+        return validMoves;
+    }
+
 
     private ArrayList<Move> attackMoves(int[][] dir, int[][] bitmapPositions) {
         ArrayList<Move> attackMoves = new ArrayList<>();
 
-        int opponentValue = (moveUp) ? -1 : 1;
+        int selfValue = (moveUp) ? 1 : -1;
         int xStart = getSquare().getColumn();
         int yStart = getSquare().getRow();
 
@@ -104,7 +128,7 @@ public class Pawn extends Piece {
             }
 
             // Capture or crash in own piece
-            if (bitmapPositions[y_new][x_new] == opponentValue) {
+            if (bitmapPositions[y_new][x_new] != 0 && bitmapPositions[y_new][x_new] != selfValue) {
                 attackMoves.add(new Move(getSquare(), new Square(y_new, x_new), this));
             }
         }
@@ -125,7 +149,7 @@ public class Pawn extends Piece {
             atkDir = new int[][]{{1, 1}, {-1, 1}};
         }
 
-        int opponentValue = (moveUp) ? -1 : 1;
+        int selfValue = (moveUp) ? 1 : -1;
         int xStart = getSquare().getColumn();
         int yStart = getSquare().getRow();
 
@@ -139,7 +163,7 @@ public class Pawn extends Piece {
             }
 
             // Capture or crash in own piece
-            if (bitmapPositions[y_new][x_new] == opponentValue) {
+            if (bitmapPositions[y_new][x_new] != selfValue) {
                 attackSquares.add(new Square(y_new, x_new));
             }
         }

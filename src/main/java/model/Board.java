@@ -4,6 +4,8 @@ package main.java.model;
 import main.java.model.pieces.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import static java.lang.StrictMath.abs;
 import static main.java.model.PieceColor.*;
@@ -21,6 +23,11 @@ public class Board {
     private int[][] bitmapAttackingPositionsBlack;
 
     private ArrayList<Move> moveHistory;
+
+    private int counterOfNoPawnsNoCaptures; // For 50 moves without moving a pawn or capturing a piece
+
+    private HashMap<String, Integer> boardStateCounter;
+    private String lastBoardId;
 
     private int status; // 0 going, 1 white win, -1 black win, 2 stalemate
 
@@ -73,9 +80,11 @@ public class Board {
 
     private void init() {
         moveHistory = new ArrayList<>();
+        boardStateCounter = new HashMap<>();
+        status = 0;
+        counterOfNoPawnsNoCaptures = 0;
         updateBitmapPositions();
         updateBitmapAttackingPositions();
-        status = 0;
     }
 
     public boolean movePiece(Move move, boolean realMove) {
@@ -133,6 +142,21 @@ public class Board {
         updateBitmapAttackingPositions();
 
         if (realMove) {
+            // Generate string representation of board and count board states
+            lastBoardId = Arrays.toString(getIdPositions());
+            Integer boardCount = boardStateCounter.get(lastBoardId);
+            if (boardCount != null) {
+                boardCount += 1;
+                boardStateCounter.put(lastBoardId, boardCount);
+            } else {
+                boardStateCounter.put(lastBoardId, 1);
+            }
+
+            // Count moves where no pawn have been moved or no piece have been captured
+            counterOfNoPawnsNoCaptures++;
+            if (move.getCapturedPiece() != null || move.getPiece() instanceof Pawn)
+                counterOfNoPawnsNoCaptures = 0;
+
             updateStatus();
         }
 
@@ -153,6 +177,38 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public int[] getIdPositions() {
+        int[] idPositions = new int[64];
+        for (Piece whitePiece : whitePieces) {
+            int c = whitePiece.getSquare().getColumn(); //(i % 8);
+            int r = whitePiece.getSquare().getRow(); //(i / 8) % 8;
+            int i = c + (r*8);
+            idPositions[i] = getIdOfPiece(whitePiece);
+        }
+        for (Piece blackPiece : blackPieces) {
+            int c = blackPiece.getSquare().getColumn(); //(i % 8);
+            int r = blackPiece.getSquare().getRow(); //(i / 8) % 8;
+            int i = c + (r*8);
+            idPositions[i] = getIdOfPiece(blackPiece);
+        }
+        return idPositions;
+    }
+
+    private int getIdOfPiece(Piece piece) {
+        if (piece instanceof King) {
+            return 6;
+        } else if (piece instanceof Queen) {
+            return 5;
+        } else if (piece instanceof Rook) {
+            return 4;
+        } else if (piece instanceof Knight) {
+            return 3;
+        } else if (piece instanceof Bishop) {
+            return 2;
+        }
+        return 1; // Default is pawn
     }
 
     public boolean isMovePromotion(Move move) {
@@ -260,11 +316,22 @@ public class Board {
                 if (findKing(nextTurn).toBeCaptured(getBitmapAttackingPositions(previousTurn))) {
                     status = (nextTurn == WHITE) ? -1 : 1;
                 } else {
+                    System.out.println("STALEMATE!!");
                     status = 2;
                 }
+            } else if (counterOfNoPawnsNoCaptures >= 50) {
+                System.out.println("50TREKKUTENCAPTUREELLERPAWN!!");
+                status = 2;
+            }else if (boardStateCounter.get(lastBoardId) >= 3){
+                System.out.println("TREKKGJENTAKELSE!!");
+                status = 2;
             }
         }
         System.out.println("Status:" + status);
+    }
+
+    public boolean isBoardRepetition() {
+        return false;
     }
 
     public void updateCastling(PieceColor color) {

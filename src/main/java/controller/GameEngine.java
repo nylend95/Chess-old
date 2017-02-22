@@ -83,20 +83,7 @@ public class GameEngine implements Initializable, IControls {
         board.resetBoard();
         whiteToMove = true;
         if (p1 instanceof RandomAgent && p2 instanceof RandomAgent){
-            frameStart = System.currentTimeMillis();
-            new AnimationTimer(){
-                @Override
-                public void handle(long now) {
-                    long currentTime = System.currentTimeMillis();
-                    accumulator += currentTime - frameStart;
-                    frameStart = currentTime;
-
-                    if(accumulator > dt){
-                        accumulator -= dt;
-                    }
-                    drawBoard();
-                }
-            }.start();
+            p1.selectMove(board.generateValidMoves(p1.getColor()));
         }
         drawBoard();
     }
@@ -121,10 +108,23 @@ public class GameEngine implements Initializable, IControls {
 
     public void doMove(Move move) {
         board.movePiece(move, true);
+        drawBoard();
 
         if (board.isMovePromotion(move)) {
             // Promotion choice
             System.out.println("Piece promoted!!");
+        }
+
+        int status = board.getStatus();
+        if (status == 1){
+            System.out.println("WHITE WINS!");
+            return;
+        }else if (status == -1){
+            System.out.println("BLACK WINS!");
+            return;
+        }else if (status == 2){
+            System.out.println("REMIS...");
+            return;
         }
 
         // Next player's turn
@@ -196,9 +196,8 @@ public class GameEngine implements Initializable, IControls {
             doMove(move);
             startSquare = endSquare = null;
         }
-
-        drawBoard();
         selectedPiece = null;
+        drawBoard();
     }
 
     private void drawPossibleMoves(Piece piece) {
