@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane fx:controller="main.java.controller.GameEngine" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="979.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.GameEngine">
    <children>
       <Canvas fx:id="cv" height="800.0" width="800.0" />
+      <Button layoutX="846.0" layoutY="145.0" mnemonicParsing="false" onAction="#handleNewGame" text="New game" />
+      <ChoiceBox layoutX="817.0" layoutY="248.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

@@ -213,4 +213,10 @@ public class GameEngine implements Initializable, IControls {
         return new Square(row, column);
 
     }
+
+    public void handleNewGame(){
+        board = new Board();
+        whiteToMove = true;
+        drawBoard();
+    }
 }
