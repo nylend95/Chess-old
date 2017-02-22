@@ -1,9 +1,13 @@
 package main.java.controller;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.java.model.*;
@@ -15,6 +19,9 @@ import main.java.model.players.RandomAgent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import static main.java.model.PieceColor.BLACK;
+import static main.java.model.PieceColor.WHITE;
 
 /**
  * Created by Jesper Nylend on 10.02.2017.
@@ -33,6 +40,9 @@ public class GameEngine implements Initializable, IControls {
     private Square endSquare;
 
 
+    public Button btnNewGame;
+    public ChoiceBox dropPlayer2;
+    public ChoiceBox dropPlayer1;
     @FXML
     Canvas cv;
     private GraphicsContext gc;
@@ -40,9 +50,15 @@ public class GameEngine implements Initializable, IControls {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO if AI is first to go (white) nothing happens!
+        dropPlayer1.setItems(FXCollections.observableArrayList(
+                "Human", new Separator(),  "RandomAI")
+        );
+        dropPlayer2.setItems(FXCollections.observableArrayList(
+                "Human", new Separator(),  "RandomAI")
+        );
         board = new Board();
-        p1 = new HumanPlayer("White", PieceColor.WHITE, this);
-        p2 = new HumanPlayer("Black", PieceColor.BLACK, this);
+        p1 = new HumanPlayer("White", WHITE, this);
+        p2 = new HumanPlayer("Black", BLACK, this);
 
         gc = cv.getGraphicsContext2D();
         cv.setOnMouseClicked(event -> {
@@ -57,11 +73,12 @@ public class GameEngine implements Initializable, IControls {
         drawBoard();
     }
 
-    private void reset() {
-        p1 = new HumanPlayer("White", PieceColor.WHITE, this);
-        p2 = new HumanPlayer("Black", PieceColor.BLACK, this);
+    private void reset(Player player1, Player player2) {
+        p1 = player1;
+        p2 = player2;
         board.resetBoard();
         whiteToMove = true;
+        drawBoard();
     }
 
     private void drawBoard() {
@@ -85,7 +102,7 @@ public class GameEngine implements Initializable, IControls {
     public void doMove(Move move) {
         board.movePiece(move, true);
 
-        if (board.isMovePromotion(move)){
+        if (board.isMovePromotion(move)) {
             // Promotion choice
             System.out.println("Piece promoted!!");
         }
@@ -118,16 +135,16 @@ public class GameEngine implements Initializable, IControls {
 
     private void drawPiece(Piece piece) {
         if (piece instanceof Pawn) {
-            if (((Pawn) piece).getPromotedTo() == null){
-            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_pawn.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+            if (((Pawn) piece).getPromotedTo() == null) {
+                gc.drawImage(new Image("pieces/" + piece.getColorString() + "_pawn.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             } else if (((Pawn) piece).getPromotedTo() instanceof Bishop) {
-            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_bishop.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+                gc.drawImage(new Image("pieces/" + piece.getColorString() + "_bishop.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             } else if (((Pawn) piece).getPromotedTo() instanceof Knight) {
-            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_knight.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+                gc.drawImage(new Image("pieces/" + piece.getColorString() + "_knight.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             } else if (((Pawn) piece).getPromotedTo() instanceof Rook) {
-            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_rook.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+                gc.drawImage(new Image("pieces/" + piece.getColorString() + "_rook.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             } else if (((Pawn) piece).getPromotedTo() instanceof Queen) {
-            gc.drawImage(new Image("pieces/" + piece.getColorString() + "_queen.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+                gc.drawImage(new Image("pieces/" + piece.getColorString() + "_queen.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             }
         } else if (piece instanceof Bishop) {
             gc.drawImage(new Image("pieces/" + piece.getColorString() + "_bishop.png"), (piece.getSquare().getColumn() * CELL_SIZE) + PADDING, (piece.getSquare().getRow() * CELL_SIZE) + PADDING, IMAGE_SIZE, IMAGE_SIZE);
@@ -184,7 +201,7 @@ public class GameEngine implements Initializable, IControls {
     // Util methods
     private Piece getPieceOnSquare(Square square, PieceColor color) {
         Piece pieceOnSquare = null;
-        if (color.equals(PieceColor.WHITE)) {
+        if (color.equals(WHITE)) {
             for (Piece piece : board.getWhitePieces()) {
                 if (square.getRow() == piece.getSquare().getRow() && square.getColumn() == piece.getSquare().getColumn()) {
                     pieceOnSquare = piece;
@@ -201,7 +218,7 @@ public class GameEngine implements Initializable, IControls {
     }
 
     private void selectPieceToMove(double x, double y) {
-        PieceColor color = whiteToMove ? PieceColor.WHITE : PieceColor.BLACK;
+        PieceColor color = whiteToMove ? WHITE : BLACK;
         startSquare = selectSquare(x, y);
         selectedPiece = getPieceOnSquare(startSquare, color);
         drawPossibleMoves(selectedPiece);
@@ -211,12 +228,23 @@ public class GameEngine implements Initializable, IControls {
         int row = (int) y / CELL_SIZE;
         int column = (int) x / CELL_SIZE;
         return new Square(row, column);
-
     }
 
-    public void handleNewGame(){
-        board = new Board();
-        whiteToMove = true;
-        drawBoard();
+    public void handleNewGame() {
+        String player1Type = (String) dropPlayer1.getValue();
+        String player2Type = (String) dropPlayer2.getValue();
+        reset(getPlayerFromType(player1Type, WHITE), getPlayerFromType(player2Type, BLACK));
+    }
+
+    private Player getPlayerFromType(String type, PieceColor color) {
+
+        switch (type) {
+            case ("Human") :
+                return new HumanPlayer(type, color, this);
+            case ("RandomAI") :
+                return new RandomAgent(type, color, this);
+            default:
+                return new HumanPlayer("Human", color, this);
+        }
     }
 }
