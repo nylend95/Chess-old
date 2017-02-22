@@ -1,5 +1,6 @@
 package main.java.controller;
 
+import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,6 +40,11 @@ public class GameEngine implements Initializable, IControls {
     private Square startSquare;
     private Square endSquare;
 
+    private double targetFPS = 1;
+    private double dt = 1000/targetFPS;
+    private double accumulator = 0;
+    private long frameStart;
+
 
     public Button btnNewGame;
     public ChoiceBox dropPlayer2;
@@ -50,12 +56,11 @@ public class GameEngine implements Initializable, IControls {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO if AI is first to go (white) nothing happens!
-        dropPlayer1.setItems(FXCollections.observableArrayList(
-                "Human", new Separator(),  "RandomAI")
-        );
-        dropPlayer2.setItems(FXCollections.observableArrayList(
-                "Human", new Separator(),  "RandomAI")
-        );
+        dropPlayer1.getItems().addAll("Human", new Separator(), "RandomAI");
+        dropPlayer2.getItems().addAll("Human", new Separator(), "RandomAI");
+        dropPlayer1.setValue("Human");
+        dropPlayer2.setValue("Human");
+
         board = new Board();
         p1 = new HumanPlayer("White", WHITE, this);
         p2 = new HumanPlayer("Black", BLACK, this);
@@ -69,7 +74,6 @@ public class GameEngine implements Initializable, IControls {
                     }
                 }
         );
-
         drawBoard();
     }
 
@@ -78,6 +82,22 @@ public class GameEngine implements Initializable, IControls {
         p2 = player2;
         board.resetBoard();
         whiteToMove = true;
+        if (p1 instanceof RandomAgent && p2 instanceof RandomAgent){
+            frameStart = System.currentTimeMillis();
+            new AnimationTimer(){
+                @Override
+                public void handle(long now) {
+                    long currentTime = System.currentTimeMillis();
+                    accumulator += currentTime - frameStart;
+                    frameStart = currentTime;
+
+                    if(accumulator > dt){
+                        accumulator -= dt;
+                    }
+                    drawBoard();
+                }
+            }.start();
+        }
         drawBoard();
     }
 
