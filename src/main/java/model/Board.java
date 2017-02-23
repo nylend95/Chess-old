@@ -251,7 +251,8 @@ public class Board {
          * Is the king for color in check?
          */
         int[][] opponentAttackingSquares = (color == WHITE) ? bitmapAttackingPositionsBlack : bitmapAttackingPositionsWhite;
-        return findKing(color).toBeCaptured(opponentAttackingSquares);
+        King king = findKing(color);
+        return king != null && king.toBeCaptured(opponentAttackingSquares);
     }
 
     public void undoLastMove() {
@@ -308,12 +309,17 @@ public class Board {
         return status;
     }
 
-    private void updateStatus() {
+    public ArrayList<Move> getMoveHistory() {
+        return moveHistory;
+    }
+
+    public void updateStatus() {
         if (moveHistory.size() > 0) {
             PieceColor nextTurn = (moveHistory.get(moveHistory.size() - 1).getPiece().getColor() == WHITE) ? BLACK : WHITE;
             PieceColor previousTurn = (nextTurn == WHITE) ? BLACK : WHITE;
             if (generateValidMoves(nextTurn).size() == 0) {
-                if (findKing(nextTurn).toBeCaptured(getBitmapAttackingPositions(previousTurn))) {
+                King king = findKing(nextTurn);
+                if (king != null && king.toBeCaptured(getBitmapAttackingPositions(previousTurn))) {
                     status = (nextTurn == WHITE) ? -1 : 1;
                 } else {
                     System.out.println("STALEMATE!!");
@@ -350,8 +356,10 @@ public class Board {
         }
 
         King king = findKing(color);
-        king.setCastlingLeft(leftPossible);
-        king.setCastlingRight(rightPossible);
+        if(king != null) {
+            king.setCastlingLeft(leftPossible);
+            king.setCastlingRight(rightPossible);
+        }
     }
 
     public ArrayList<Move> generateValidMoves(PieceColor color) {
