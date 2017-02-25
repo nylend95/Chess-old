@@ -1,11 +1,12 @@
 # Chess
-Chess game I develop as a challenge for myself (& Mikkel) with Java and JavaFX.
+Chess game developed in JavaFX as a challenge for me & Mikkel.
 
-Current known bugs and missing implementation:
+#### TODO
 - Test pawn
-- When AI vs. AI no board animation
 - Move backwards in history
 - Selection of promotion type
 - Improve all tests
 - AI needs to get a copy of board
 - Show which player to move in GUI
+- Make GUI size adjustable
+- Convert project to Maven (or something easier)

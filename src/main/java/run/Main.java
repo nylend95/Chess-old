@@ -17,7 +17,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/main/resources/gui.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/gui.fxml")); // todo I think there is a problem with our project setup..
         stage.setScene(new Scene(root));
         stage.setTitle("Chess - Jesper|Mikkel");
         stage.setResizable(false);

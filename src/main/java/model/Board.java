@@ -184,13 +184,13 @@ public class Board {
         for (Piece whitePiece : whitePieces) {
             int c = whitePiece.getSquare().getColumn(); //(i % 8);
             int r = whitePiece.getSquare().getRow(); //(i / 8) % 8;
-            int i = c + (r*8);
+            int i = c + (r * 8);
             idPositions[i] = getIdOfPiece(whitePiece);
         }
         for (Piece blackPiece : blackPieces) {
             int c = blackPiece.getSquare().getColumn(); //(i % 8);
             int r = blackPiece.getSquare().getRow(); //(i / 8) % 8;
-            int i = c + (r*8);
+            int i = c + (r * 8);
             idPositions[i] = getIdOfPiece(blackPiece);
         }
         return idPositions;
@@ -328,12 +328,14 @@ public class Board {
             } else if (counterOfNoPawnsNoCaptures >= 50) {
                 System.out.println("50TREKKUTENCAPTUREELLERPAWN!!");
                 status = 2;
-            }else if (boardStateCounter.get(lastBoardId) >= 3){
+            } else if (boardStateCounter.get(lastBoardId) >= 3) {
                 System.out.println("TREKKGJENTAKELSE!!");
                 status = 2;
             }
         }
-        System.out.println("Status:" + status);
+        if (status != 0) {
+            System.out.println("Status:" + status);
+        }
     }
 
     public boolean isBoardRepetition() {
@@ -356,7 +358,7 @@ public class Board {
         }
 
         King king = findKing(color);
-        if(king != null) {
+        if (king != null) {
             king.setCastlingLeft(leftPossible);
             king.setCastlingRight(rightPossible);
         }
@@ -474,5 +476,10 @@ public class Board {
 
     public ArrayList<Piece> getBlackPieces() {
         return blackPieces;
+    }
+
+    public Board getCopy(){
+        // TODO make a copy to avoid AI modifying this instance
+        return this;
     }
 }

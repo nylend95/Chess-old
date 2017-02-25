@@ -1,6 +1,7 @@
 package main.java.model.players;
 
 import main.java.controller.IControls;
+import main.java.model.Board;
 import main.java.model.Move;
 import main.java.model.PieceColor;
 
@@ -13,11 +14,11 @@ import java.util.ArrayList;
 public class HumanPlayer extends Player {
 
     public HumanPlayer(String name, PieceColor color, IControls controls) {
-        super(name, color, controls);
+        super(name, color, false, controls);
     }
 
     @Override
-    public void selectMove(ArrayList<Move> validMoves) {
+    public void selectMove(Board board) {
 
     }
 }

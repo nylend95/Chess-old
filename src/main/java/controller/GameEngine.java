@@ -1,7 +1,6 @@
 package main.java.controller;
 
 import javafx.animation.AnimationTimer;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -21,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static java.lang.Thread.sleep;
 import static main.java.model.PieceColor.BLACK;
 import static main.java.model.PieceColor.WHITE;
 
@@ -32,6 +32,8 @@ public class GameEngine implements Initializable, IControls {
     private static final double IMAGE_SIZE = 98;
     private static final int CELL_SIZE = 100;
     private static final double PADDING = 1.0;
+    private static long ANIMATION_TIME_THRESHOLD = 300; // Minimum anitmation time per move
+
     private Board board;
     private Player p1;
     private Player p2;
@@ -39,12 +41,6 @@ public class GameEngine implements Initializable, IControls {
     private Piece selectedPiece;
     private Square startSquare;
     private Square endSquare;
-
-    private double targetFPS = 1;
-    private double dt = 1000/targetFPS;
-    private double accumulator = 0;
-    private long frameStart;
-
 
     public Button btnNewGame;
     public ChoiceBox dropPlayer2;
@@ -55,7 +51,6 @@ public class GameEngine implements Initializable, IControls {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // TODO if AI is first to go (white) nothing happens!
         dropPlayer1.getItems().addAll("Human", new Separator(), "RandomAI");
         dropPlayer2.getItems().addAll("Human", new Separator(), "RandomAI");
         dropPlayer1.setValue("Human");
@@ -67,14 +62,42 @@ public class GameEngine implements Initializable, IControls {
 
         gc = cv.getGraphicsContext2D();
         cv.setOnMouseClicked(event -> {
-                    if (selectedPiece == null) {
-                        selectPieceToMove(event.getX(), event.getY());
-                    } else {
-                        drawMove(event.getX(), event.getY(), selectedPiece);
+                    if (!getPlayersTurn().isAi()) {
+                        if (selectedPiece == null) {
+                            selectPieceToMove(event.getX(), event.getY());
+                        } else {
+                            drawMove(event.getX(), event.getY(), selectedPiece);
+                        }
                     }
                 }
         );
-        drawBoard();
+        reset(p1, p2);
+
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (board.getStatus() != 0){
+                    return;
+                }
+
+                Player playerToMove = getPlayersTurn();
+                if (playerToMove.isAi()){
+                    final long startTime = System.currentTimeMillis();
+                    // AI's turn
+                    playerToMove.selectMove(board.getCopy());
+                    final long usedTime = System.currentTimeMillis() - startTime;
+                    if (usedTime-startTime < ANIMATION_TIME_THRESHOLD){
+                        try {
+                            sleep(ANIMATION_TIME_THRESHOLD - usedTime);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    drawBoard();
+                }
+            }
+        }.start();
     }
 
     private void reset(Player player1, Player player2) {
@@ -82,9 +105,6 @@ public class GameEngine implements Initializable, IControls {
         p2 = player2;
         board.resetBoard();
         whiteToMove = true;
-        if (p1 instanceof RandomAgent && p2 instanceof RandomAgent){
-            p1.selectMove(board.generateValidMoves(p1.getColor()));
-        }
         drawBoard();
     }
 
@@ -116,25 +136,19 @@ public class GameEngine implements Initializable, IControls {
         }
 
         int status = board.getStatus();
-        if (status == 1){
-            System.out.println("WHITE WINS!");
+        if (status == 1) {
+            System.out.println("White wins after " + board.getMoveHistory().size() + " moves");
             return;
-        }else if (status == -1){
-            System.out.println("BLACK WINS!");
+        } else if (status == -1) {
+            System.out.println("Black wins after " + board.getMoveHistory().size() + " moves");
             return;
-        }else if (status == 2){
-            System.out.println("REMIS...");
+        } else if (status == 2) {
+            System.out.println("Remis after " + board.getMoveHistory().size() + " moves.");
             return;
         }
 
         // Next player's turn
         whiteToMove = !whiteToMove;
-        Player playerToMove = getPlayersTurn();
-        if (!(playerToMove instanceof HumanPlayer)) {
-            // AI's turn
-            ArrayList<Move> legalMoves = board.generateValidMoves(playerToMove.getColor());
-            playerToMove.selectMove(legalMoves);
-        }
     }
 
     private Player getPlayersTurn() {
@@ -258,9 +272,9 @@ public class GameEngine implements Initializable, IControls {
     private Player getPlayerFromType(String type, PieceColor color) {
 
         switch (type) {
-            case ("Human") :
+            case ("Human"):
                 return new HumanPlayer(type, color, this);
-            case ("RandomAI") :
+            case ("RandomAI"):
                 return new RandomAgent(type, color, this);
             default:
                 return new HumanPlayer("Human", color, this);
