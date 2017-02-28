@@ -22,6 +22,9 @@ class Utils {
                     exists = true;
                 }
             }
+            if (!exists){
+                System.out.println("Generated moved does not exists! " + gen_move);
+            }
             Assert.assertTrue(exists);
         }
 

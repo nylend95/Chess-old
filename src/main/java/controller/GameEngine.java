@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static java.lang.Math.round;
 import static java.lang.Thread.sleep;
 import static main.java.model.PieceColor.BLACK;
 import static main.java.model.PieceColor.WHITE;
@@ -29,10 +30,12 @@ import static main.java.model.PieceColor.WHITE;
  * s305070
  */
 public class GameEngine implements Initializable, IControls {
-    private static final double IMAGE_SIZE = 98;
-    private static final int CELL_SIZE = 100;
-    private static final double PADDING = 1.0;
-    private static long ANIMATION_TIME_THRESHOLD = 300; // Minimum anitmation time per move
+    public static final double CANVAS_HEIGHT = 600;
+    public static final double TOTAL_WIDTH = 1105;
+    private static final double CELL_SIZE = CANVAS_HEIGHT * 0.125;
+    private static final double PADDING = CELL_SIZE * 0.01;
+    private static final double IMAGE_SIZE = CELL_SIZE - 2 * PADDING;
+    private static long ANIMATION_TIME_THRESHOLD = 30; // Minimum anitmation time per move
 
     private Board board;
     private Player p1;
@@ -76,17 +79,17 @@ public class GameEngine implements Initializable, IControls {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if (board.getStatus() != 0){
+                if (board.getStatus() != 0) {
                     return;
                 }
 
                 Player playerToMove = getPlayersTurn();
-                if (playerToMove.isAi()){
+                if (playerToMove.isAi()) {
                     final long startTime = System.currentTimeMillis();
                     // AI's turn
-                    playerToMove.selectMove(board.getCopy());
+                    playerToMove.selectMove(board.makeCopy());
                     final long usedTime = System.currentTimeMillis() - startTime;
-                    if (usedTime-startTime < ANIMATION_TIME_THRESHOLD){
+                    if (usedTime < ANIMATION_TIME_THRESHOLD) {
                         try {
                             sleep(ANIMATION_TIME_THRESHOLD - usedTime);
                         } catch (InterruptedException e) {
@@ -119,7 +122,7 @@ public class GameEngine implements Initializable, IControls {
             } else {
                 gc.setFill(Color.WHITE);
             }
-            gc.fillRect(c * CELL_SIZE + 1, r * CELL_SIZE + 1, IMAGE_SIZE, IMAGE_SIZE);
+            gc.fillRect(c * CELL_SIZE + PADDING, r * CELL_SIZE + PADDING, IMAGE_SIZE, IMAGE_SIZE);
             gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
             gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
         }
@@ -137,13 +140,13 @@ public class GameEngine implements Initializable, IControls {
 
         int status = board.getStatus();
         if (status == 1) {
-            System.out.println("White wins after move " + (int)Math.ceil((double)board.getMoveHistory().size()/2));
+            System.out.println("White wins after " + board.getNumberOfMovesDone() + " moves");
             return;
         } else if (status == -1) {
-            System.out.println("Black wins after move " + (int)Math.ceil((double)board.getMoveHistory().size()/2));
+            System.out.println("Black wins after " + board.getNumberOfMovesDone() + " moves");
             return;
         } else if (status == 2) {
-            System.out.println("Remis after move " + (int)Math.ceil((double)board.getMoveHistory().size()/2));
+            System.out.println("Remis after " + board.getNumberOfMovesDone() + " moves.");
             return;
         }
 
@@ -258,8 +261,8 @@ public class GameEngine implements Initializable, IControls {
     }
 
     private Square selectSquare(double x, double y) {
-        int row = (int) y / CELL_SIZE;
-        int column = (int) x / CELL_SIZE;
+        int row = (int) (y / CELL_SIZE);
+        int column = (int) (x / CELL_SIZE);
         return new Square(row, column);
     }
 

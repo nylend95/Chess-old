@@ -55,9 +55,8 @@ public class QueenTest {
         validEndSquares.add(new Square(4, 6));
         validEndSquares.add(new Square(4, 7));
 
-        ArrayList<Move> generatedValidMoves = queen.validMoves(board.getBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = board.generateValidMoves(queen);
         ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
-
         testMoves(validMoves, generatedValidMoves);
 
         white = new ArrayList<>();
@@ -95,9 +94,8 @@ public class QueenTest {
         validEndSquares.add(new Square(4, 6));
         validEndSquares.add(new Square(4, 7));
 
-        generatedValidMoves = queen.validMoves(board.getBitmapPositions(), null);
+        generatedValidMoves = board.generateValidMoves(queen);
         validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
-
         testMoves(validMoves, generatedValidMoves);
 
         white = new ArrayList<>();
@@ -135,9 +133,8 @@ public class QueenTest {
         validEndSquares.add(new Square(4, 6));
         validEndSquares.add(new Square(4, 7));
 
-        generatedValidMoves = queen.validMoves(board.getBitmapPositions(), null);
+        generatedValidMoves = board.generateValidMoves(queen);
         validMoves = Utils.convertEndSquaresToMoves(validEndSquares, queen);
-
         testMoves(validMoves, generatedValidMoves);
     }
 }

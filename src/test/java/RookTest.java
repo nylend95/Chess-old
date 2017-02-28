@@ -40,9 +40,8 @@ public class RookTest {
         endSquares.add(new Square(4, 6));
         endSquares.add(new Square(4, 7));
 
-        ArrayList<Move> generatedValidMoves = rook.validMoves(board.getBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = board.generateValidMoves(rook);
         ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(endSquares, rook);
-
         testMoves(validMoves, generatedValidMoves);
 
         white = new ArrayList<>();
@@ -69,9 +68,8 @@ public class RookTest {
         endSquares.add(new Square(4, 6));
         endSquares.add(new Square(4, 7));
 
-        generatedValidMoves = rook.validMoves(board.getBitmapPositions(), null);
+        generatedValidMoves = board.generateValidMoves(rook);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, rook);
-
         testMoves(validMoves, generatedValidMoves);
 
         white = new ArrayList<>();
@@ -100,9 +98,8 @@ public class RookTest {
         endSquares.add(new Square(4, 6));
         endSquares.add(new Square(4, 7));
 
-        generatedValidMoves = rook.validMoves(board.getBitmapPositions(), null);
+        generatedValidMoves = board.generateValidMoves(rook);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, rook);
-
         testMoves(validMoves, generatedValidMoves);
     }
 }

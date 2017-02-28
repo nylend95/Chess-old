@@ -50,13 +50,11 @@ public class Pawn extends Piece {
 
     @Override
     public ArrayList<Move> validMoves(int[][] bitmapPositions, int[][] bitmapAttackingPositions) {
-        ArrayList<Move> legalMoves;
         if (promotedTo == null) {
-            legalMoves = normalMoves(bitmapPositions);
+            return normalMoves(bitmapPositions);
         } else {
             return promotedTo.validMoves(bitmapPositions, bitmapAttackingPositions);
         }
-        return legalMoves;
     }
 
     private ArrayList<Move> normalMoves(int[][] bitmapPositions) { //true = white

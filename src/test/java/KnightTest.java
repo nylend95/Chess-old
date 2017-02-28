@@ -38,9 +38,8 @@ public class KnightTest {
         endSquares.add(new Square(2,5));
         endSquares.add(new Square(2,3));
 
-        ArrayList<Move> generatedValidMoves = knight.validMoves(board.getBitmapPositions(), null);
+        ArrayList<Move> generatedValidMoves = board.generateValidMoves(knight);
         ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
-
         testMoves(validMoves, generatedValidMoves);
 
         //Adding opponent piece
@@ -60,9 +59,8 @@ public class KnightTest {
 
         board = new Board(white, black);
 
-        generatedValidMoves = knight.validMoves(board.getBitmapPositions(), null);
+        generatedValidMoves = board.generateValidMoves(knight);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
-
         testMoves(validMoves, generatedValidMoves);
 
 
@@ -81,19 +79,18 @@ public class KnightTest {
 
         board = new Board(white, black);
 
-        generatedValidMoves = knight.validMoves(board.getBitmapPositions(), null);
+        generatedValidMoves = board.generateValidMoves(knight);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
-
         testMoves(validMoves, generatedValidMoves);
 
         //Initial positions
-        Knight knightStart = new Knight(PieceColor.WHITE, new Square(7,6));
+        knight = new Knight(PieceColor.WHITE, new Square(7,6));
         Pawn pawn1 = new Pawn(PieceColor.WHITE, new Square(6,7));
         Pawn pawn2 = new Pawn(PieceColor.WHITE, new Square(6,6));
         Pawn pawn3 = new Pawn(PieceColor.WHITE, new Square(6,5));
         Pawn pawn4 = new Pawn(PieceColor.WHITE, new Square(6,4));
         white = new ArrayList<>();
-        white.add(knightStart);
+        white.add(knight);
         white.add(pawn1);
         white.add(pawn2);
         white.add(pawn3);
@@ -105,13 +102,9 @@ public class KnightTest {
 
         board = new Board(white, new ArrayList<>());
 
-        generatedValidMoves = knightStart.validMoves(board.getBitmapPositions(), null);
-        validMoves = Utils.convertEndSquaresToMoves(endSquares, knightStart);
-
+        generatedValidMoves = board.generateValidMoves(knight);
+        validMoves = Utils.convertEndSquaresToMoves(endSquares, knight);
         testMoves(validMoves, generatedValidMoves);
-
-
-
     }
 
 }

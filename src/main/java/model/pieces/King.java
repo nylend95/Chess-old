@@ -39,7 +39,8 @@ public class King extends Piece {
         ArrayList<Move> validMoves = checkDirections(dir, bitmapPositions, 1);
 
         // Ugly code to check castling to both sides
-        if (!isMoved() && castlingLeft) {
+        boolean kingIsInPosition = (getSquare().getColumn()==4 && (getSquare().getRow()==0||getSquare().getRow()==7));
+        if (!isMoved() && kingIsInPosition && castlingLeft) {
             if (getColor() == PieceColor.WHITE && bitmapPositions[7][2] == 0 && bitmapPositions[7][3] == 0 &&
                     bitmapAttackingPositions[7][2] == 0 && bitmapAttackingPositions[7][3] == 0 && bitmapAttackingPositions[7][4] == 0) {
                 validMoves.add(new Move(getSquare(), new Square(7,2), this));
@@ -48,7 +49,7 @@ public class King extends Piece {
                 validMoves.add(new Move(getSquare(), new Square(0,2), this));
             }
         }
-        if (!isMoved() && castlingRight) {
+        if (!isMoved() && kingIsInPosition && castlingRight) {
             if (getColor() == PieceColor.WHITE && bitmapPositions[7][5] == 0 && bitmapPositions[7][6] == 0 &&
                     bitmapAttackingPositions[7][5] == 0 && bitmapAttackingPositions[7][6] == 0 && bitmapAttackingPositions[7][4] == 0) {
                 validMoves.add(new Move(getSquare(), new Square(7,6), this));

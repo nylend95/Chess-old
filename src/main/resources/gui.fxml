@@ -4,10 +4,24 @@
 <?import java.lang.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.layout.*?>
+<?import main.java.controller.GameEngine?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1105.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.GameEngine">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.GameEngine">
+   <prefHeight>
+      <GameEngine fx:constant="CANVAS_HEIGHT"/>
+   </prefHeight>
+   <prefWidth>
+      <GameEngine fx:constant="TOTAL_WIDTH"/>
+   </prefWidth>
    <children>
-      <Canvas fx:id="cv" height="800.0" width="800.0" />
+      <Canvas fx:id="cv">
+         <width>
+            <GameEngine fx:constant="CANVAS_HEIGHT"/>
+         </width>
+         <height>
+            <GameEngine fx:constant="CANVAS_HEIGHT"/>
+         </height>
+      </Canvas>
       <Button fx:id="btnNewGame" layoutX="906.0" layoutY="190.0" mnemonicParsing="false" onAction="#handleNewGame" text="New game" />
       <ChoiceBox fx:id="dropPlayer2" layoutX="952.0" layoutY="126.0" prefHeight="31.0" prefWidth="92.0" />
       <ChoiceBox fx:id="dropPlayer1" layoutX="860.0" layoutY="126.0" prefHeight="31.0" prefWidth="92.0" />

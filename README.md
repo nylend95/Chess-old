@@ -2,11 +2,10 @@
 Chess game developed in JavaFX as a challenge for me & Mikkel.
 
 #### TODO
-- Test pawn
 - Move backwards in history
-- Selection of promotion type
 - Improve all tests
-- AI needs to get a copy of board
+- Selection of promotion type
 - Show which player to move in GUI
-- Make GUI size adjustable
-- Convert project to Maven (or something easier)
+- Show which piece is selected as human
+- Convert project to Maven (or something easier)?
+- Button for resigning or offering draw?

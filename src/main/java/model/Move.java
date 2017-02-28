@@ -36,4 +36,14 @@ public class Move {
     public void setCapturedPiece(Piece capturedPiece) {
         this.capturedPiece = capturedPiece;
     }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "startSquare=" + startSquare +
+                ", endSquare=" + endSquare +
+                ", piece=" + piece +
+                ", capturedPiece=" + capturedPiece +
+                '}';
+    }
 }
