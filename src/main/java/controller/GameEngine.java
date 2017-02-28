@@ -137,13 +137,13 @@ public class GameEngine implements Initializable, IControls {
 
         int status = board.getStatus();
         if (status == 1) {
-            System.out.println("White wins after " + board.getMoveHistory().size() + " moves");
+            System.out.println("White wins after move " + (int)Math.ceil((double)board.getMoveHistory().size()/2));
             return;
         } else if (status == -1) {
-            System.out.println("Black wins after " + board.getMoveHistory().size() + " moves");
+            System.out.println("Black wins after move " + (int)Math.ceil((double)board.getMoveHistory().size()/2));
             return;
         } else if (status == 2) {
-            System.out.println("Remis after " + board.getMoveHistory().size() + " moves.");
+            System.out.println("Remis after move " + (int)Math.ceil((double)board.getMoveHistory().size()/2));
             return;
         }
 
