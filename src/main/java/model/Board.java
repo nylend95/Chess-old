@@ -344,7 +344,7 @@ public class Board {
     }
 
     public int getNumberOfMovesDone() {
-        return moveHistory.size();
+        return (int) Math.ceil(moveHistory.size()/2);
     }
 
     public void updateStatus() {

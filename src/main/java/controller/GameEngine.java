@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import main.java.model.*;
 import main.java.model.pieces.*;
 import main.java.model.players.HumanPlayer;
+import main.java.model.players.NegamaxAI;
 import main.java.model.players.Player;
 import main.java.model.players.RandomAgent;
 
@@ -54,8 +55,8 @@ public class GameEngine implements Initializable, IControls {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        dropPlayer1.getItems().addAll("Human", new Separator(), "RandomAI");
-        dropPlayer2.getItems().addAll("Human", new Separator(), "RandomAI");
+        dropPlayer1.getItems().addAll("Human", new Separator(), "RandomAI", "NegamaxAI");
+        dropPlayer2.getItems().addAll("Human", new Separator(), "RandomAI", "NegamaxAI");
         dropPlayer1.setValue("Human");
         dropPlayer2.setValue("Human");
 
@@ -279,6 +280,8 @@ public class GameEngine implements Initializable, IControls {
                 return new HumanPlayer(type, color, this);
             case ("RandomAI"):
                 return new RandomAgent(type, color, this);
+            case ("NegamaxAI"):
+                return new NegamaxAI(type, color, this);
             default:
                 return new HumanPlayer("Human", color, this);
         }
