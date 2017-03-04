@@ -4,6 +4,7 @@ import main.java.controller.IControls;
 import main.java.model.Board;
 import main.java.model.Move;
 import main.java.model.PieceColor;
+import main.java.model.pieces.Pawn;
 import main.java.model.pieces.Piece;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import static main.java.model.Board.getIdOfPiece;
  * TODO switch PieceColor to int in negamax
  */
 public class NegamaxAI extends Player {
-    private int selectedMaxDept = 2;
+    private int selectedMaxDept = 2; // Bug when selected max dept above 2
 
     public NegamaxAI(String name, PieceColor color, IControls controls) {
         super(name, color, true, controls);
@@ -30,12 +31,15 @@ public class NegamaxAI extends Player {
         double currentBestMoveValue = 0.0;
         int blackOrWhite = (getColor() == PieceColor.WHITE) ? 1 : -1;
         Move currentBestMove = possibleMoves.get(0);
-        // Running negamax over possible moves to find the best possible move
+        ArrayList<Double> moveValues = new ArrayList<>();
 
+        // Running negamax over possible moves to find the best possible move
         // TODO make this multi-core?
         for (Move rootChild : possibleMoves) {
             double value = negamax(rootChild, board.makeCopy(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, selectedMaxDept, switchPlayer(getColor()));
             double convertedValue = value * blackOrWhite;
+            moveValues.add(convertedValue);
+
             if (convertedValue >= 1000) {
                 currentBestMoveValue = convertedValue;
                 currentBestMove = rootChild;
@@ -93,10 +97,22 @@ public class NegamaxAI extends Player {
         // Piece values
         for (Piece whitePiece : board.getWhitePieces()) {
             int id = getIdOfPiece(whitePiece);
+            if (id == 1 && whitePiece instanceof Pawn){
+                Pawn pawn = (Pawn) whitePiece;
+                if (pawn.isPromoted() && pawn.getPromotedTo() != null){
+                    id = getIdOfPiece(pawn.getPromotedTo());
+                }
+            }
             boardScore += calculatePieceValue(id);
         }
         for (Piece blackPiece : board.getBlackPieces()) {
             int id = getIdOfPiece(blackPiece);
+            if (id == 1 && blackPiece instanceof Pawn){
+                Pawn pawn = (Pawn) blackPiece;
+                if (pawn.isPromoted() && pawn.getPromotedTo() != null){
+                    id = getIdOfPiece(pawn.getPromotedTo());
+                }
+            }
             boardScore -= calculatePieceValue(id);
         }
 
@@ -120,9 +136,9 @@ public class NegamaxAI extends Player {
                 }
             }
         }
-        attackingValue *= 0.1;
+        attackingValue *= 0.05;
 
-        return boardScore + attackingValue;
+        return boardScore;
     }
 
     private static double calculatePieceValue(int pieceId) {

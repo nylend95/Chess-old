@@ -5,12 +5,13 @@ import main.java.model.Move;
 import main.java.model.PieceColor;
 import main.java.model.Square;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by mikke on 14-Feb-17.
  */
-public abstract class Piece {
+public abstract class Piece implements Serializable{
 
     private final PieceColor color;
     private Square square;

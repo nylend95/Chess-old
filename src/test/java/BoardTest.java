@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Jesper Nylend on 16.02.2017.
@@ -100,6 +101,38 @@ public class BoardTest {
         Assert.assertEquals(0, board.getStatus());
         board.movePiece(new Move(whiteRook1.getSquare(), new Square(4, 0), whiteRook1), true);
         Assert.assertEquals(1, board.getStatus());
+    }
+
+    @Test
+    public void testCopy() {
+        Board board = new Board();
+
+        for (int i = 0; i < 50; i++) {
+            PieceColor color = ((i + 1) % 2 == 0) ? PieceColor.WHITE : PieceColor.BLACK;
+            ArrayList<Move> validMoves = board.generateValidMoves(color);
+            if (validMoves.size() > 0) {
+                int index = new Random().nextInt(validMoves.size());
+                Move move = validMoves.get(index);
+                board.movePiece(move, true);
+            } else {
+                break;
+            }
+        }
+
+        int timeThreshold = 3000;
+        int nTests = 1000;
+        final long startTime = System.currentTimeMillis();
+        for (int i = 0; i < nTests; i++) {
+            Board copyBoard = board.makeCopy();
+            int status = copyBoard.getStatus();
+        }
+        final long usedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Used: " + usedTime + " to generate " + nTests + " copies.");
+        Assert.assertTrue(usedTime < timeThreshold); // TODO modify this setting as more optimization is done
+
+        Board copyBoard = board.makeCopy();
+        Assert.assertEquals(copyBoard.getWhitePieces().size(), board.getWhitePieces().size());
+        Assert.assertEquals(copyBoard.getWhitePieces().get(0).getSquare(), board.getWhitePieces().get(0).getSquare());
     }
 
 

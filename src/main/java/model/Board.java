@@ -3,6 +3,7 @@ package main.java.model;
 
 import main.java.model.pieces.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import static main.java.model.PieceColor.*;
  * Created by Jesper Nylend on 10.02.2017.
  * s305070
  */
-public class Board {
+public class Board implements Serializable{
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
     private int[][] bitmapPositions;
@@ -49,10 +50,13 @@ public class Board {
         whitePieces = new ArrayList<>(16);
         blackPieces = new ArrayList<>(16);
 
-        //White pieces
+        //Pawns
         for (int i = 0; i < 8; i++) {
             whitePieces.add(new Pawn(WHITE, new Square(6, i)));
+            blackPieces.add(new Pawn(BLACK, new Square(1, i)));
         }
+
+        // White pieces
         whitePieces.add(new Rook(WHITE, new Square(7, 0)));
         whitePieces.add(new Rook(WHITE, new Square(7, 7)));
         whitePieces.add(new Bishop(WHITE, new Square(7, 2)));
@@ -62,10 +66,7 @@ public class Board {
         whitePieces.add(new Queen(WHITE, new Square(7, 3)));
         whitePieces.add(new King(WHITE, new Square(7, 4)));
 
-        //Black pieces
-        for (int i = 0; i < 8; i++) {
-            blackPieces.add(new Pawn(BLACK, new Square(1, i)));
-        }
+        // Black pieces
         blackPieces.add(new Rook(BLACK, new Square(0, 0)));
         blackPieces.add(new Rook(BLACK, new Square(0, 7)));
         blackPieces.add(new Bishop(BLACK, new Square(0, 2)));
@@ -271,7 +272,7 @@ public class Board {
         return null;
     }
 
-    private boolean isCheck(PieceColor color) {
+    public boolean isCheck(PieceColor color) {
         /*
          * Is the king for color in check?
          */
@@ -365,9 +366,9 @@ public class Board {
                 status = 2;
             }
         }
-        if (status != 0) {
+        /*if (status != 0) {
             System.out.println("Status:" + status);
-        }
+        }*/
 
     }
 
@@ -515,12 +516,26 @@ public class Board {
     }
 
     public Board makeCopy() {
-        Board copy = new Board();
-
+        /*Board copy = new Board();
         for (Move move : moveHistory) {
             copy.movePiece(new Move(move.getStartSquare(), move.getEndSquare(), move.getPiece()), true);
+        }*/
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(this);
+            oos.flush();
+            oos.close();
+            bos.close();
+            byte[] byteData = bos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+            return (Board) new ObjectInputStream(bais).readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return copy;
+
+        return null;
     }
 
 }

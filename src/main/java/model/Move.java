@@ -2,10 +2,12 @@ package main.java.model;
 
 import main.java.model.pieces.Piece;
 
+import java.io.Serializable;
+
 /**
  * Created by mikke on 16-Feb-17.
  */
-public class Move {
+public class Move implements Serializable {
     private final Square startSquare;
     private final Square endSquare;
     private final Piece piece;
@@ -39,6 +41,7 @@ public class Move {
 
     @Override
     public String toString() {
+        // todo change to correct toString for a move
         return "Move{" +
                 "startSquare=" + startSquare +
                 ", endSquare=" + endSquare +

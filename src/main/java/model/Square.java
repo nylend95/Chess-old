@@ -1,10 +1,12 @@
 package main.java.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Jesper Nylend on 14.02.2017.
  * s305070
  */
-public class Square {
+public class Square implements Serializable{
     private int row;
     private int column;
 
