@@ -2,7 +2,7 @@
 Chess game developed in JavaFX as a challenge for me & Mikkel.
 
 #### TODO
-- Make Negamax include alpha-beta pruning
+- Might be a bug with castling (when knight still is in position)
 - Move backwards in history
 - Improve all tests
 - Selection of promotion type

@@ -8,6 +8,9 @@ import main.java.model.pieces.Pawn;
 import main.java.model.pieces.Piece;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.IntStream;
 
 import static java.lang.Double.max;
 import static main.java.model.Board.getIdOfPiece;
@@ -19,6 +22,7 @@ import static main.java.model.Board.getIdOfPiece;
  */
 public class NegamaxAI extends Player {
     private int selectedMaxDept = 2; // Bug when selected max dept above 2
+    private Comparator<MoveScore> comp = Comparator.comparingDouble(o -> o.score);
 
     public NegamaxAI(String name, PieceColor color, IControls controls) {
         super(name, color, true, controls);
@@ -27,56 +31,45 @@ public class NegamaxAI extends Player {
     @Override
     public void selectMove(Board board) {
         long startTime = System.currentTimeMillis();
-        ArrayList<Move> possibleMoves = board.generateValidMoves(getColor());
-        double currentBestMoveValue = 0.0;
+        ArrayList<Move> validMoves = board.generateValidMoves(getColor());
         int blackOrWhite = (getColor() == PieceColor.WHITE) ? 1 : -1;
-        Move currentBestMove = possibleMoves.get(0);
-        ArrayList<Double> moveValues = new ArrayList<>();
+        MoveScore[] scoreMoves  = new MoveScore[validMoves.size()];
 
-        // Running negamax over possible moves to find the best possible move
-        // TODO make this multi-core?
-        for (Move rootChild : possibleMoves) {
-            double value = negamax(rootChild, board.makeCopy(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, selectedMaxDept, switchPlayer(getColor()));
-            double convertedValue = value * blackOrWhite;
-            moveValues.add(convertedValue);
-
-            if (convertedValue >= 1000) {
-                currentBestMoveValue = convertedValue;
-                currentBestMove = rootChild;
-                break;
-            } else if (convertedValue > currentBestMoveValue) {
-                currentBestMoveValue = convertedValue;
-                currentBestMove = rootChild;
-            }
+        for (int i = 0; i < validMoves.size(); i++) {
+            Board copy = board.makeCopy();
+            copy.movePiece(validMoves.get(i), true);
+            double score = calculateBoardScore(copy) * blackOrWhite;
+            scoreMoves[i] = new MoveScore(validMoves.get(i), score, copy);
         }
+        Arrays.sort(scoreMoves, comp.reversed());
 
-        // Do move
+        // Running negamax over possible moves in parallel to find the best possible move
+        IntStream.range(0,scoreMoves.length).parallel().forEach(i->{
+            double value = negamax(scoreMoves[i].board, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, selectedMaxDept, switchPlayer(getColor()));
+            scoreMoves[i].score = value * blackOrWhite;
+        });
+
+        Arrays.sort(scoreMoves, comp.reversed());
+
+        // Do best move
         final long usedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getColor() + " : " + currentBestMove + " : value " + currentBestMoveValue + " : " + possibleMoves.size() + " moves : " + usedTime / 1000 + "(s)");
-        makeMove(currentBestMove);
+        System.out.println(getColor() + " : " + scoreMoves[0].move + " : value " + scoreMoves[0].score + " : " + validMoves.size() + " moves : " + usedTime / 1000.0 + "(s)");
+        makeMove(scoreMoves[0].move);
     }
 
-    public static double negamax(Move move, Board board, double alpha, double beta, int dept, PieceColor nextPlayer) {
-        board.movePiece(move, true);
-
-        if (board.getStatus() != 0) {
-            if (board.getStatus() == 2) {
-                return 0.0;
-            }
-            return 1000 * board.getStatus();
-        }
-
-        // boardScore = calculateBoardScore(board)
-        if (dept == 0 /*abs boardScore > n */) {
+    public static double negamax(Board board, double alpha, double beta, int dept, PieceColor nextPlayer) {
+        if (dept == 0 || board.getStatus() != 0) {
             return calculateBoardScore(board);
         }
 
         double bestValue = Double.NEGATIVE_INFINITY;
         ArrayList<Move> validMoves = board.generateValidMoves(nextPlayer);
-        // TODO order validMoves based on score
 
+        //int c = 0; // Could be used to make it faster
         for (Move validMove : validMoves) {
-            double value = -negamax(validMove, board.makeCopy(), -beta, -alpha, dept - 1, switchPlayer(nextPlayer));
+            Board copy = board.makeCopy();
+            copy.movePiece(validMove, true);
+            double value = -negamax(copy, -beta, -alpha, dept - 1, switchPlayer(nextPlayer));
             bestValue = max(bestValue, value);
             alpha = max(alpha, value);
 
@@ -92,6 +85,13 @@ public class NegamaxAI extends Player {
     }
 
     private static double calculateBoardScore(Board board) {
+        if (board.getStatus() != 0) {
+            if (board.getStatus() == 2) {
+                return 0.0;
+            }
+            return 1000 * board.getStatus();
+        }
+
         double boardScore = 0.0;
 
         // Piece values
@@ -116,6 +116,7 @@ public class NegamaxAI extends Player {
             boardScore -= calculatePieceValue(id);
         }
 
+
         // Most attacking squares
         double attackingValue = 0.0;
         int[][] whiteAttackingSquares = board.getBitmapAttackingPositions(PieceColor.WHITE);
@@ -136,9 +137,9 @@ public class NegamaxAI extends Player {
                 }
             }
         }
-        attackingValue *= 0.05;
+        attackingValue *= 0.01;
 
-        return boardScore;
+        return boardScore + attackingValue;
     }
 
     private static double calculatePieceValue(int pieceId) {
@@ -153,6 +154,18 @@ public class NegamaxAI extends Player {
                 return 3;
             default:
                 return 1;
+        }
+    }
+
+    private static class MoveScore{
+        protected Move move;
+        protected double score;
+        protected Board board;
+
+        public MoveScore(Move move, double score, Board board){
+            this.move = move;
+            this.score = score;
+            this.board = board;
         }
     }
 }

@@ -19,6 +19,7 @@ public class Board implements Serializable{
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
     private int[][] bitmapPositions;
+    private int[][] bitmapPawnPositions;
     private int[][] bitmapPositionsNoKings;
     private int[][] bitmapAttackingPositionsWhite;
     private int[][] bitmapAttackingPositionsBlack;
@@ -356,13 +357,13 @@ public class Board implements Serializable{
             if (king != null && king.toBeCaptured(getBitmapAttackingPositions(previousTurn)) && generateValidMoves(nextTurn).size() == 0) {
                 status = (nextTurn == WHITE) ? -1 : 1;
             } else if (generateValidMoves(nextTurn).size() == 0) {
-                System.out.println("STALEMATE!!");
+                //System.out.println("STALEMATE!!");
                 status = 2;
             } else if (counterOfNoPawnsNoCaptures >= 50) {
-                System.out.println("50TREKKUTENCAPTUREELLERPAWN!!");
+                //System.out.println("50TREKKUTENCAPTUREELLERPAWN!!");
                 status = 2;
             } else if (boardStateCounter.get(lastBoardId) >= 3) {
-                System.out.println("TREKKGJENTAKELSE!!");
+                //System.out.println("TREKKGJENTAKELSE!!");
                 status = 2;
             }
         }
@@ -456,25 +457,40 @@ public class Board implements Serializable{
         //-1 for black pieces
         //+1 for white pieces
         bitmapPositions = new int[8][8];
+        bitmapPawnPositions = new int[8][8];
         bitmapPositionsNoKings = new int[8][8];
 
         for (Piece black : blackPieces) {
-            bitmapPositions[black.getSquare().getRow()][black.getSquare().getColumn()] = -1;
+            int row = black.getSquare().getRow();
+            int col = black.getSquare().getColumn();
+            bitmapPositions[row][col] = -1;
+            if (black instanceof Pawn){
+                bitmapPawnPositions[row][col] = -1;
+            }
             if (!(black instanceof King)) {
-                bitmapPositionsNoKings[black.getSquare().getRow()][black.getSquare().getColumn()] = -1;
+                bitmapPositionsNoKings[row][col] = -1;
             }
         }
 
         for (Piece white : whitePieces) {
-            bitmapPositions[white.getSquare().getRow()][white.getSquare().getColumn()] = 1;
+            int row = white.getSquare().getRow();
+            int col = white.getSquare().getColumn();
+            bitmapPositions[row][col] = 1;
+            if (white instanceof Pawn){
+                bitmapPawnPositions[row][col] = 1;
+            }
             if (!(white instanceof King)) {
-                bitmapPositionsNoKings[white.getSquare().getRow()][white.getSquare().getColumn()] = 1;
+                bitmapPositionsNoKings[row][col] = 1;
             }
         }
     }
 
     public int[][] getBitmapPositions() {
         return bitmapPositions;
+    }
+
+    public int[][] getBitmapPawnPositions() {
+        return bitmapPawnPositions;
     }
 
     private void updateBitmapAttackingPositions() {
