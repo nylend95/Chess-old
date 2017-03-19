@@ -1,6 +1,7 @@
 package main.java.model;
 
 
+import com.rits.cloning.Cloner;
 import main.java.model.pieces.*;
 
 import java.io.*;
@@ -108,8 +109,10 @@ public class Board implements Serializable {
             int[] col = (move.getEndSquare().getColumn() == 2) ? new int[]{0, 3} : new int[]{7, 5};
             Square rookSquare = new Square(row, col[0]);
             Piece rookToBeCastled = findPiece(moveColor, rookSquare);
-            rookToBeCastled.setMoved(true);
-            rookToBeCastled.setSquare(new Square(row, col[1]));
+            if (rookToBeCastled != null) {
+                rookToBeCastled.setMoved(true);
+                rookToBeCastled.setSquare(new Square(row, col[1]));
+            }
         }
 
         // Check if first move to either of rooks
@@ -202,19 +205,23 @@ public class Board implements Serializable {
         return false;
     }
 
-    public static int getIdOfPiece(Piece piece) {
+    public Integer[] getIdPositions() {
+        return idPositions;
+    }
+
+    public static int getIdOfPiece(Piece piece, int color) {
         if (piece instanceof King) {
-            return 6;
+            return 6 * color;
         } else if (piece instanceof Queen) {
-            return 5;
+            return 5 * color;
         } else if (piece instanceof Rook) {
-            return 4;
+            return 4 * color;
         } else if (piece instanceof Knight) {
-            return 3;
+            return 3 * color;
         } else if (piece instanceof Bishop) {
-            return 2;
+            return 2 * color;
         }
-        return 1; // Default is pawn
+        return color; // Default is pawn
     }
 
     private boolean isMovePromotionUndo(Move move) {
@@ -284,17 +291,17 @@ public class Board implements Serializable {
          */
         int[][] opponentAttackingSquares;
         King king;
-        if (color == WHITE){
+        if (color == WHITE) {
             opponentAttackingSquares = bitmapAttackingPositionsBlack;
             king = whiteKing;
-        }else{
+        } else {
             opponentAttackingSquares = bitmapAttackingPositionsWhite;
             king = blackKing;
         }
         return king != null && king.toBeCaptured(opponentAttackingSquares);
     }
 
-    private void undoLastMove() {
+    public void undoLastMove() {
         /*
          * Undo the last move. Rearrange the positions and remove from move-history. Update bitmaps.
          */
@@ -494,7 +501,7 @@ public class Board implements Serializable {
             int row = black.getSquare().getRow();
             int col = black.getSquare().getColumn();
             int i = col + (row * 8);
-            idPositions[i] = getIdOfPiece(black);
+            idPositions[i] = getIdOfPiece(black, -1);
             bitmapPositions[row][col] = -1;
 
             if (black instanceof Pawn) {
@@ -509,7 +516,7 @@ public class Board implements Serializable {
             int row = white.getSquare().getRow();
             int col = white.getSquare().getColumn();
             int i = col + (row * 8);
-            idPositions[i] = getIdOfPiece(white);
+            idPositions[i] = getIdOfPiece(white, 1);
             bitmapPositions[row][col] = 1;
             if (white instanceof Pawn) {
                 bitmapPawnPositions[row][col] = 1;
@@ -580,7 +587,14 @@ public class Board implements Serializable {
     }
 
     public Board makeCopy() {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        /*
+         * Link: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22uk.com.robust-it%22%20AND%20a%3A%22cloning%22
+         * Github: https://github.com/kostaskougios/cloning
+         */
+        Cloner cloner = new Cloner();
+        return cloner.deepClone(this);
+
+        /*ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos;
         try {
             oos = new ObjectOutputStream(bos);
@@ -595,7 +609,7 @@ public class Board implements Serializable {
             e.printStackTrace();
         }
 
-        return null;
+        return null;*/
     }
 
 }

@@ -30,7 +30,7 @@ public class NegamaxAITest {
         });
 
         int timeThreshold = 10000;
-        int nTests = 2;
+        int nTests = 5;
         final long startTime = System.currentTimeMillis();
         Move move;
         for (int i = 0; i < nTests; i++) {
@@ -40,10 +40,10 @@ public class NegamaxAITest {
 
             if (i % 2 == 0) {
                 // White's turn
-                move = aiWhite.selectMove(board);
+                move = aiWhite.selectMove(board.makeCopy());
 
             } else {
-                move = aiBlack.selectMove(board);
+                move = aiBlack.selectMove(board.makeCopy());
             }
             board.movePiece(move, true);
         }

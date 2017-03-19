@@ -39,10 +39,10 @@ public class SimpleAgentTest {
 
             if (i % 2 == 0) {
                 // White's turn
-                move = simpleAgentWhite.selectMove(board);
+                move = simpleAgentWhite.selectMove(board.makeCopy());
 
             } else {
-                move = simpleAgentBlack.selectMove(board);
+                move = simpleAgentBlack.selectMove(board.makeCopy());
             }
             board.movePiece(move, true);
         }

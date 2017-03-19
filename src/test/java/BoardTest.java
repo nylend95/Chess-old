@@ -122,7 +122,7 @@ public class BoardTest {
         }
 
         int timeThreshold = 3000;
-        int nTests = 1000;
+        int nTests = 2000;
         final long startTime = System.currentTimeMillis();
         for (int i = 0; i < nTests; i++) {
             Board copyBoard = board.makeCopy();

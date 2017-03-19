@@ -17,8 +17,7 @@ import static main.java.model.Board.getIdOfPiece;
 
 /**
  * Created by mikkel on 25-Feb-17.
- * TODO currently VERY slow. Game needs optimization and this needs alpha-beta pruning
- * TODO switch PieceColor to int in negamax
+ * TODO currently VERY slow. Game needs optimization
  */
 public class NegamaxAI extends Player {
     private int selectedMaxDept = 2; // Bug when selected max dept above 2
@@ -35,7 +34,7 @@ public class NegamaxAI extends Player {
         ArrayList<Move> validMoves = board.generateValidMoves(getColor());
         int blackOrWhite = (getColor() == PieceColor.WHITE) ? 1 : -1;
 
-        MoveScore[] scoreMoves  = new MoveScore[validMoves.size()];
+        MoveScore[] scoreMoves = new MoveScore[validMoves.size()];
 
         for (int i = 0; i < validMoves.size(); i++) {
             Board copy = board.makeCopy();
@@ -46,7 +45,7 @@ public class NegamaxAI extends Player {
         Arrays.sort(scoreMoves, comp.reversed());
 
         // Running negamax over possible moves in parallel to find the best possible move
-        IntStream.range(0,scoreMoves.length).parallel().forEach(i->{
+        IntStream.range(0, scoreMoves.length).parallel().forEach(i -> {
             double value = negamax(scoreMoves[i].board, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, selectedMaxDept, switchPlayer(getColor()));
             scoreMoves[i].score = value * blackOrWhite;
         });
@@ -88,9 +87,11 @@ public class NegamaxAI extends Player {
 
         //int c = 0; // Could be used to make it faster
         for (Move validMove : validMoves) {
-            Board copy = board.makeCopy();
-            copy.movePiece(validMove, true);
-            double value = -negamax(copy, -beta, -alpha, dept - 1, switchPlayer(nextPlayer));
+//            Board copy = board.makeCopy();
+//            copy.movePiece(validMove, true);
+            board.movePiece(validMove, true);
+            double value = -negamax(board, -beta, -alpha, dept - 1, switchPlayer(nextPlayer));
+            board.undoLastMove();
             bestValue = max(bestValue, value);
             alpha = max(alpha, value);
 
@@ -117,24 +118,24 @@ public class NegamaxAI extends Player {
 
         // Piece values
         for (Piece whitePiece : board.getWhitePieces()) {
-            int id = getIdOfPiece(whitePiece);
-            if (id == 1 && whitePiece instanceof Pawn){
+            int id = getIdOfPiece(whitePiece, 1);
+            if (id == 1 && whitePiece instanceof Pawn) {
                 Pawn pawn = (Pawn) whitePiece;
-                if (pawn.isPromoted() && pawn.getPromotedTo() != null){
-                    id = getIdOfPiece(pawn.getPromotedTo());
+                if (pawn.isPromoted() && pawn.getPromotedTo() != null) {
+                    id = getIdOfPiece(pawn.getPromotedTo(), 1);
                 }
             }
             boardScore += calculatePieceValue(id);
         }
         for (Piece blackPiece : board.getBlackPieces()) {
-            int id = getIdOfPiece(blackPiece);
-            if (id == 1 && blackPiece instanceof Pawn){
+            int id = getIdOfPiece(blackPiece, -1);
+            if (id == -1 && blackPiece instanceof Pawn) {
                 Pawn pawn = (Pawn) blackPiece;
-                if (pawn.isPromoted() && pawn.getPromotedTo() != null){
-                    id = getIdOfPiece(pawn.getPromotedTo());
+                if (pawn.isPromoted() && pawn.getPromotedTo() != null) {
+                    id = getIdOfPiece(pawn.getPromotedTo(), -1);
                 }
             }
-            boardScore -= calculatePieceValue(id);
+            boardScore -= calculatePieceValue(-id);
         }
 
 
@@ -142,19 +143,19 @@ public class NegamaxAI extends Player {
         double attackingValue = 0.0;
         int[][] whiteAttackingSquares = board.getBitmapAttackingPositions(PieceColor.WHITE);
         int[][] blackAttackingSquares = board.getBitmapAttackingPositions(PieceColor.BLACK);
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                if (whiteAttackingSquares[r][c] != 0) {
+        for (int i = 0; i < 64; i++) {
+            int c = (i % 8);
+            int r = (i / 8) % 8;
+            if (whiteAttackingSquares[r][c] != 0) {
+                attackingValue++;
+                if ((r == 3 || r == 4) && (c == 3 || c == 4)) {
                     attackingValue++;
-                    if ((r == 3 || r == 4) && (c == 3 || c == 4)) {
-                        attackingValue++;
-                    }
                 }
-                if (blackAttackingSquares[r][c] != 0) {
+            }
+            if (blackAttackingSquares[r][c] != 0) {
+                attackingValue--;
+                if ((r == 3 || r == 4) && (c == 3 || c == 4)) {
                     attackingValue--;
-                    if ((r == 3 || r == 4) && (c == 3 || c == 4)) {
-                        attackingValue--;
-                    }
                 }
             }
         }
@@ -178,12 +179,12 @@ public class NegamaxAI extends Player {
         }
     }
 
-    private static class MoveScore{
+    private static class MoveScore {
         protected Move move;
         protected double score;
         protected Board board;
 
-        public MoveScore(Move move, double score, Board board){
+        public MoveScore(Move move, double score, Board board) {
             this.move = move;
             this.score = score;
             this.board = board;
