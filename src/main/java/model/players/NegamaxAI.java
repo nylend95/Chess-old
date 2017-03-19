@@ -22,6 +22,7 @@ import static main.java.model.Board.getIdOfPiece;
  */
 public class NegamaxAI extends Player {
     private int selectedMaxDept = 2; // Bug when selected max dept above 2
+    private boolean isLogging = true;
     private Comparator<MoveScore> comp = Comparator.comparingDouble(o -> o.score);
 
     public NegamaxAI(String name, PieceColor color, IControls controls) {
@@ -29,10 +30,11 @@ public class NegamaxAI extends Player {
     }
 
     @Override
-    public void selectMove(Board board) {
+    public Move selectMove(Board board) {
         long startTime = System.currentTimeMillis();
         ArrayList<Move> validMoves = board.generateValidMoves(getColor());
         int blackOrWhite = (getColor() == PieceColor.WHITE) ? 1 : -1;
+
         MoveScore[] scoreMoves  = new MoveScore[validMoves.size()];
 
         for (int i = 0; i < validMoves.size(); i++) {
@@ -53,8 +55,27 @@ public class NegamaxAI extends Player {
 
         // Do best move
         final long usedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getColor() + " : " + scoreMoves[0].move + " : value " + scoreMoves[0].score + " : " + validMoves.size() + " moves : " + usedTime / 1000.0 + "(s)");
+        if (isLogging)
+            System.out.println(getColor() + " : " + scoreMoves[0].move + " : value " + scoreMoves[0].score + " : " + validMoves.size() + " moves : " + usedTime / 1000.0 + "(s)");
+
         makeMove(scoreMoves[0].move);
+        return scoreMoves[0].move;
+    }
+
+    public int getSelectedMaxDept() {
+        return selectedMaxDept;
+    }
+
+    public void setSelectedMaxDept(int selectedMaxDept) {
+        this.selectedMaxDept = selectedMaxDept;
+    }
+
+    public boolean isLogging() {
+        return isLogging;
+    }
+
+    public void setLogging(boolean logging) {
+        isLogging = logging;
     }
 
     public static double negamax(Board board, double alpha, double beta, int dept, PieceColor nextPlayer) {
@@ -137,7 +158,7 @@ public class NegamaxAI extends Player {
                 }
             }
         }
-        attackingValue *= 0.01;
+        attackingValue *= 0.0001;
 
         return boardScore + attackingValue;
     }

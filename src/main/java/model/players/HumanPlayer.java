@@ -18,7 +18,7 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public void selectMove(Board board) {
-
+    public Move selectMove(Board board) {
+        return null;
     }
 }

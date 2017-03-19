@@ -12,12 +12,12 @@ import java.util.ArrayList;
  * Created by mikke on 14-Feb-17.
  */
 public abstract class Piece implements Serializable{
-
     private final PieceColor color;
     private Square square;
     private boolean moved;
 
     public Piece(PieceColor color, Square square) {
+
         this.color = color;
         this.square = square;
         this.moved = false;

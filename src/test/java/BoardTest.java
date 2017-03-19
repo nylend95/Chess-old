@@ -91,6 +91,8 @@ public class BoardTest {
         black.add(blackKing);
 
         Board board = new Board(white, black);
+        board.setWhiteKing(whiteKing);
+        board.setBlackKing(blackKing);
 
         board.updateStatus();
 

@@ -83,8 +83,8 @@ public class KingTest {
     public void testCastling() {
         // Test castling
         ArrayList<Piece> white = new ArrayList<>();
-        King king = new King(PieceColor.WHITE, new Square(7, 4));
-        white.add(king);
+        King whiteKing = new King(PieceColor.WHITE, new Square(7, 4));
+        white.add(whiteKing);
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 4)));
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 3)));
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 5)));
@@ -101,15 +101,15 @@ public class KingTest {
         endSquares.add(new Square(7, 2)); // Castling left
         endSquares.add(new Square(7, 6)); // Castling right
 
-        ArrayList<Move> generatedValidMoves = board.generateValidMoves(king);
-        ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(endSquares, king);
+        ArrayList<Move> generatedValidMoves = board.generateValidMoves(whiteKing);
+        ArrayList<Move> validMoves = Utils.convertEndSquaresToMoves(endSquares, whiteKing);
 
         testMoves(validMoves, generatedValidMoves);
 
         // Test non-valid castling because of check
         white = new ArrayList<>();
-        king = new King(PieceColor.WHITE, new Square(7, 4));
-        white.add(king);
+        whiteKing = new King(PieceColor.WHITE, new Square(7, 4));
+        white.add(whiteKing);
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 4)));
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 3)));
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 5)));
@@ -126,16 +126,16 @@ public class KingTest {
         endSquares.add(new Square(7, 3));
         endSquares.add(new Square(7, 6)); // Only castling right possible because of rook on column 2
 
-        generatedValidMoves = board.generateValidMoves(king);
-        validMoves = Utils.convertEndSquaresToMoves(endSquares, king);
+        generatedValidMoves = board.generateValidMoves(whiteKing);
+        validMoves = Utils.convertEndSquaresToMoves(endSquares, whiteKing);
 
         testMoves(validMoves, generatedValidMoves);
 
 
         // Test non-valid castling
         white = new ArrayList<>();
-        king = new King(PieceColor.WHITE, new Square(7, 4));
-        white.add(king);
+        whiteKing = new King(PieceColor.WHITE, new Square(7, 4));
+        white.add(whiteKing);
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 4)));
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 3)));
         white.add(new Pawn(PieceColor.WHITE, new Square(6, 5)));
@@ -143,21 +143,24 @@ public class KingTest {
         white.add(new Rook(PieceColor.WHITE, new Square(6, 7)));
 
         black = new ArrayList<>();
-        Piece blackKing = new King(PieceColor.BLACK, new Square(2, 2));
+        King blackKing = new King(PieceColor.BLACK, new Square(2, 2));
         black.add(blackKing);
 
         board = new Board(white, black);
-        board.movePiece(new Move(king.getSquare(), new Square(7, 5), king), true);
+        board.setBlackKing(blackKing);
+        board.setWhiteKing(whiteKing);
+        board.movePiece(new Move(whiteKing.getSquare(), new Square(7, 5), whiteKing), true);
         board.movePiece(new Move(blackKing.getSquare(), new Square(2, 3), blackKing), true);
-        board.movePiece(new Move(king.getSquare(), new Square(7, 4), king), true);
+        board.movePiece(new Move(whiteKing.getSquare(), new Square(7, 4), whiteKing), true);
         board.movePiece(new Move(blackKing.getSquare(), new Square(2, 4), blackKing), true);
+
 
         endSquares = new ArrayList<>();
         endSquares.add(new Square(7, 5));
         endSquares.add(new Square(7, 3));
 
-        generatedValidMoves = board.generateValidMoves(king);
-        validMoves = Utils.convertEndSquaresToMoves(endSquares, king);
+        generatedValidMoves = board.generateValidMoves(whiteKing);
+        validMoves = Utils.convertEndSquaresToMoves(endSquares, whiteKing);
 
         testMoves(validMoves, generatedValidMoves);
     }
