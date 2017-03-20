@@ -224,6 +224,10 @@ public class GameEngine implements Initializable, IControls {
         int[][] bitmapPositions = board.getBitmapPositions();
         ArrayList<Move> possibleMoves = board.generateValidMoves(piece);
 
+        gc.setFill(Color.LIGHTGREEN);
+        gc.fillRect(piece.getSquare().getColumn() * CELL_SIZE + PADDING, piece.getSquare().getRow() * CELL_SIZE + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        drawPiece(piece);
+
         for (Move validMove : possibleMoves) {
             int vx = validMove.getEndSquare().getColumn();
             int vy = validMove.getEndSquare().getRow();
