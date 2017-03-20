@@ -122,7 +122,7 @@ public class Pawn extends Piece {
 
             // Out of bounds
             if (x_new < 0 || x_new > 7 || y_new < 0 || y_new > 7) {
-                break;
+                continue;
             }
 
             // Capture or crash in own piece
