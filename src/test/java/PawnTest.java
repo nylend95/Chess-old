@@ -185,5 +185,26 @@ public class PawnTest {
         generatedValidMoves = board.generateValidMoves(whitePawn);
         validMoves = Utils.convertEndSquaresToMoves(endSquares, whitePawn);
         testMoves(validMoves, generatedValidMoves);
+
+        //H-Pawn can't take to the left.
+        white = new ArrayList<>();
+        whitePawn = new Pawn(PieceColor.WHITE, new Square(5, 7));
+        whitePawn.setMoved(true);
+        white.add(whitePawn);
+
+        black = new ArrayList<>();
+        blackPawn = new Pawn(PieceColor.BLACK, new Square(4, 6));
+        black.add(blackPawn);
+
+        board = new Board(white, black);
+
+        endSquares = new ArrayList<>();
+        endSquares.add(new Square(4, 6));
+        endSquares.add(new Square(4, 7));
+
+        generatedValidMoves = board.generateValidMoves(whitePawn);
+        validMoves = Utils.convertEndSquaresToMoves(endSquares, whitePawn);
+
+        testMoves(validMoves, generatedValidMoves);
     }
 }
