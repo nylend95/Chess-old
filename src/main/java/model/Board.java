@@ -101,6 +101,9 @@ public class Board implements Serializable {
          */
         PieceColor moveColor = move.getPiece().getColor();
         Piece pieceToBeMoved = findPiece(moveColor, move.getStartSquare());
+        if (pieceToBeMoved == null){
+            System.out.println("adlkf");
+        }
         ArrayList<Piece> captureList = (moveColor == WHITE) ? blackPieces : whitePieces;
 
         // Check if castling
@@ -154,6 +157,14 @@ public class Board implements Serializable {
             if (bitmapPositions[move.getEndSquare().getRow()][move.getEndSquare().getColumn()] == opponentValue) {
                 for (Piece piece : captureList) {
                     if (piece.getSquare().equals(move.getEndSquare())) {
+                        if (piece instanceof Rook){
+                            King king = (moveColor == WHITE) ? blackKing : whiteKing;
+                            if (move.getEndSquare().getColumn() == 0){
+                                king.setCastlingLeft(false);
+                            }else if (move.getEndSquare().getColumn() == 7){
+                                king.setCastlingRight(false);
+                            }
+                        }
                         captureList.remove(piece);
                         move.setCapturedPiece(piece);
                         break;
@@ -312,11 +323,22 @@ public class Board implements Serializable {
 
         Move lastMove = moveHistory.get(moveHistory.size() - 1);
         Piece movedPiece = findPiece(lastMove.getPiece().getColor(), lastMove.getEndSquare());
+        if (movedPiece == null){
+            System.out.println("asdjfla");
+        }
         movedPiece.setSquare(lastMove.getStartSquare());
 
 
         if (lastMove.getCapturedPiece() != null) {
             Piece capturedPiece = lastMove.getCapturedPiece();
+            if (!capturedPiece.isMoved() && capturedPiece instanceof Rook){
+                King king = (capturedPiece.getColor() == WHITE) ? whiteKing : blackKing;
+                if (lastMove.getEndSquare().getColumn() == 0){
+                    king.setCastlingLeft(true);
+                }else if (lastMove.getEndSquare().getColumn() == 7){
+                    king.setCastlingRight(true);
+                }
+            }
             if (capturedPiece.getColor() == WHITE) {
                 whitePieces.add(capturedPiece);
             } else {
@@ -349,6 +371,9 @@ public class Board implements Serializable {
             int endCol = (lastMove.getEndSquare().getColumn() == 2) ? 0 : 7;
             int row = lastMove.getStartSquare().getRow();
             Piece rookInCastling = findPiece(movedPiece.getColor(), new Square(row, col));
+            if (rookInCastling == null){
+                System.out.println("asdfø");
+            }
             rookInCastling.setMoved(false);
             rookInCastling.setSquare(new Square(row, endCol));
         }

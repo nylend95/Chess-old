@@ -29,7 +29,7 @@ public class NegamaxAITest {
             }
         });
 
-        int timeThreshold = 10000;
+        int timeThreshold = 22000;
         int nTests = 5;
         final long startTime = System.currentTimeMillis();
         Move move;
@@ -51,7 +51,5 @@ public class NegamaxAITest {
         final long usedTime = System.currentTimeMillis() - startTime;
         System.out.println("Used: " + usedTime + " to play " + nTests + " moves at depth " + aiWhite.getSelectedMaxDept());
         Assert.assertTrue(usedTime < timeThreshold);
-
-
     }
 }

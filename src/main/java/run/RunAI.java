@@ -37,7 +37,6 @@ public class RunAI {
         Move move;
         while (gameCounter < nGames){
             if (board.getStatus() != 0) {
-                //System.out.println("Status: " + board.getStatus());
                 moveCounter += board.getNumberOfMovesDone();
                 if (board.getStatus() == 1){
                     stats[0]++;
@@ -55,6 +54,7 @@ public class RunAI {
                 move = aiWhite.selectMove(board.makeCopy());
 
             } else {
+                // Black's turn
                 move = aiBlack.selectMove(board.makeCopy());
             }
             board.movePiece(move, true);
@@ -63,6 +63,6 @@ public class RunAI {
 
         final long usedTime = System.currentTimeMillis() - startTime;
         System.out.println("Used: " + usedTime / 1000.0 + "(s) to play " + nGames + " games" + ", and " + moveCounter + " moves");
-        System.out.println("White wins:" + stats[0] + ", Black wins:" + stats[1] + ", remis:" + stats[2]);
+        System.out.println("White wins:" + stats[0] + ", black wins:" + stats[1] + ", remis:" + stats[2]);
     }
 }
