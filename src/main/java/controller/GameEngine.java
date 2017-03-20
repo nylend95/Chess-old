@@ -127,6 +127,15 @@ public class GameEngine implements Initializable, IControls {
             gc.strokeLine(r * CELL_SIZE, 0, r * CELL_SIZE, CELL_SIZE * 8);
             gc.strokeLine(0, r * CELL_SIZE, CELL_SIZE * 8, r * CELL_SIZE);
         }
+
+        ArrayList<Move> moveHistory = board.getMoveHistory();
+        if (moveHistory.size() > 0) {
+            Move lastMove = moveHistory.get(moveHistory.size() - 1);
+            gc.setFill(Color.BEIGE);
+            gc.fillRect(lastMove.getStartSquare().getColumn() * CELL_SIZE + PADDING, lastMove.getStartSquare().getRow() * CELL_SIZE + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+            gc.fillRect(lastMove.getEndSquare().getColumn() * CELL_SIZE + PADDING, lastMove.getEndSquare().getRow() * CELL_SIZE + PADDING, IMAGE_SIZE, IMAGE_SIZE);
+        }
+
         drawPieces();
     }
 
