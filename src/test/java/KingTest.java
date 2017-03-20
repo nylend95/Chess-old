@@ -97,6 +97,8 @@ public class KingTest {
         black.add(blackKing);
         black.add(new Rook(PieceColor.BLACK, new Square(0, 0)));
         black.add(new Rook(PieceColor.BLACK, new Square(0, 7)));
+        black.add(new Pawn(PieceColor.BLACK, new Square(1, 0)));
+        black.add(new Pawn(PieceColor.BLACK, new Square(1, 7)));
 
         Board board = new Board(white, black);
         board.setBlackKing(blackKing);
@@ -107,6 +109,7 @@ public class KingTest {
         ArrayList<Square> endSquares = new ArrayList<>();
         endSquares.add(new Square(7, 5));
         endSquares.add(new Square(7, 3));
+        endSquares.add(new Square(6, 4));
         endSquares.add(new Square(7, 2)); // Castling left
         endSquares.add(new Square(7, 6)); // Castling right
 

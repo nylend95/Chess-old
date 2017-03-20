@@ -305,7 +305,6 @@ public class Board implements Serializable {
         /*
          * Undo the last move. Rearrange the positions and remove from move-history. Update bitmaps.
          */
-        // TODO this has to be done quicker!
 
         if (moveHistory == null || moveHistory.size() == 0) {
             return;
@@ -344,16 +343,6 @@ public class Board implements Serializable {
             }
         }
 
-        if (!movedPiece.isMoved() && movedPiece instanceof Rook) {
-            King king = (movedPiece.getColor() == WHITE) ? whiteKing : blackKing;
-            if (movedPiece.getSquare().getColumn() == 0) {
-                king.setCastlingLeft(false);
-            }
-            if (movedPiece.getSquare().getColumn() == 7) {
-                king.setCastlingRight(false);
-            }
-        }
-
         // If last move is castling, undo twice.
         if (isMoveCastling(lastMove)) {
             int col = (lastMove.getEndSquare().getColumn() == 2) ? 3 : 5;
@@ -362,6 +351,25 @@ public class Board implements Serializable {
             Piece rookInCastling = findPiece(movedPiece.getColor(), new Square(row, col));
             rookInCastling.setMoved(false);
             rookInCastling.setSquare(new Square(row, endCol));
+        }
+
+        if (movedPiece instanceof Rook) {
+            King king = (movedPiece.getColor() == WHITE) ? whiteKing : blackKing;
+            if (movedPiece.isMoved()) {
+                if (movedPiece.getSquare().getColumn() == 0) {
+                    king.setCastlingLeft(false);
+                }
+                if (movedPiece.getSquare().getColumn() == 7) {
+                    king.setCastlingRight(false);
+                }
+            }else{
+                if (movedPiece.getSquare().getColumn() == 0) {
+                    king.setCastlingLeft(true);
+                }
+                if (movedPiece.getSquare().getColumn() == 7) {
+                    king.setCastlingRight(true);
+                }
+            }
         }
 
         updateBitmapPositions();
