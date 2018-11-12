@@ -11,3 +11,7 @@ Chess game developed in JavaFX as a challenge for me & Mikkel.
 - Convert project to Maven (or something easier)?
 - Make human move show up when playing against AI
 - Button for resigning or offering draw?
+
+
+
+Test Pull Request!
